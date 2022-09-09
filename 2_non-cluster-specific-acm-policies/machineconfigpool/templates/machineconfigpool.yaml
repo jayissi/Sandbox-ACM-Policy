@@ -1,0 +1,70 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.acm_policy_name }}
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+          {{- range .Values.machines }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: machineconfiguration.openshift.io/v1
+                kind: MachineConfigPool
+              {{- if eq .type "app" }}
+                metadata:
+                  name: app
+              {{- else if eq .type "odf" }}
+                metadata:
+                  name: odf
+              {{- else if eq .type "infra" }}
+                metadata:
+                  name: infra
+               {{- end }}
+                spec:
+                  machineConfigSelector:
+                  {{- if eq .type "app" }}
+                    matchExpressions:
+                      - key: machineconfiguration.openshift.io/role
+                        operator: In
+                        values: 
+                        - worker
+                        - app
+                  {{- else if eq .type "odf" }}
+                    matchExpressions:
+                      - key: machineconfiguration.openshift.io/role
+                        operator: In
+                        values:
+                        - worker
+                        - odf
+                  {{- else if eq .type "infra" }}
+                    matchExpressions:
+                      - key: machineconfiguration.openshift.io/role
+                        operator: In
+                        values: 
+                        - worker
+                        - infra
+                  {{- end }}
+                  nodeSelector:
+                  {{- if eq .type "app" }}
+                    matchLabels:
+                      node-role.kubernetes.io/app: ""
+                  {{- else if eq .type "odf" }}
+                    matchLabels:
+                      node-role.kubernetes.io/odf: ""
+                  {{- else if eq .type "infra" }}
+                    matchLabels:
+                      node-role.kubernetes.io/infra: ""
+                  {{- end -}}
+           {{- end -}}

@@ -1,0 +1,183 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-storage-namespace
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: Namespace
+                apiVersion: v1
+                metadata:
+                  name: openshift-storage
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-storage-operatorgroup
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1
+                kind: OperatorGroup
+                metadata:
+                  name: openshift-storage-ogroup
+                  namespace: openshift-storage
+                spec:
+                  targetNamespaces:
+                  - openshift-storage
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: odf-operator-install
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: Subscription
+                metadata:
+                  labels:
+                    operators.coreos.com/odf-operator.openshift-storage: ""
+                  name: odf-operator
+                  namespace: openshift-storage
+                spec:
+                  channel: stable-{{ $.Values.openshift_version }}
+                  installPlanApproval: Automatic
+                  name: odf-operator
+                  source: redhat-operators
+                  sourceNamespace: openshift-marketplace
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: odf-storage-system
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: ocs.openshift.io/v1
+                kind: StorageCluster
+                metadata:
+                  annotations:
+                    uninstall.ocs.openshift.io/cleanup-policy: delete
+                    uninstall.ocs.openshift.io/mode: graceful
+                  name: ocs-storagecluster
+                  namespace: openshift-storage
+                  finalizers:
+                    - storagecluster.ocs.openshift.io
+                spec:
+                  arbiter: {}
+                  encryption:
+                    enable: true
+                    kms: {}
+                  externalStorage: {}
+                  managedResources:
+                    cephBlockPools: {}
+                    cephConfig: {}
+                    cephFilesystems: {}
+                    cephObjectStoreUsers: {}
+                    cephObjectStores: {}
+                  nodeTopologies: {}
+                  storageDeviceSets:
+                    - config: {}
+                      resources: {}
+                      placement: {}
+                      name: ocs-deviceset-gp3
+                      dataPVCTemplate:
+                        metadata: {}
+                        spec:
+                          accessModes:
+                            - ReadWriteOnce
+                          resources:
+                            requests:
+                              {{- if eq (lower $.Values.ocs_size) "small" }}
+                              storage: 512Gi
+                              {{- else if eq (lower $.Values.ocs_size) "standard" }}
+                              storage: 2Ti
+                              {{- else if eq (lower $.Values.ocs_size) "large" }}
+                              storage: 4Ti
+                              {{- end }}
+                          storageClassName: gp3
+                          volumeMode: Block
+                        status: {}
+                      count: 1
+                      replica: 3
+                      portable: true
+                      preparePlacement: {}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: odf-operator-status
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operators.coreos.com/v1alpha1
+                kind: ClusterServiceVersion
+                metadata:
+                  namespace: openshift-storage
+                spec:
+                  displayName: OpenShift Data Foundation
+                status:
+                  phase: Succeeded
+    {{- if $.Values.enable_cephfs_default_storageclass }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: disable-default-sc-gp2
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: storage.k8s.io/v1
+                kind: StorageClass
+                metadata:
+                  annotations:
+                    storageclass.kubernetes.io/is-default-class: "false"
+                  name: gp2
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: enable-default-sc-cephfs
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: storage.k8s.io/v1
+                kind: StorageClass
+                metadata:
+                  annotations:
+                    storageclass.kubernetes.io/is-default-class: "true"
+                  name: ocs-storagecluster-cephfs
+    {{- end -}}

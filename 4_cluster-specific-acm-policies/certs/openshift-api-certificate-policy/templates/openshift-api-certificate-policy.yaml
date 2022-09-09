@@ -1,0 +1,52 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: api-cert-secret
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Secret
+                data:
+                  tls.crt: {{ .Files.Get .Values.tls.certPath | b64enc }}
+                  tls.key: {{ .Files.Get .Values.tls.keyPath | b64enc }}
+                metadata:
+                  name: {{ $.Values.api_cert_secret_name }}
+                  namespace: openshift-config
+                type: kubernetes.io/tls
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: update-api-server-config-with-new-cert
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: config.openshift.io/v1
+                kind: APIServer
+                metadata:
+                  name: cluster
+                spec:
+                  servingCerts:
+                    namedCertificates:
+                      - names:
+                        - {{ $.Values.openshift_cluster_api_domain }}
+                        servingCertificate:
+                          name: {{ $.Values.api_cert_secret_name }}

@@ -1,0 +1,11 @@
+---
+acm_policy_set_name: govern-clusters-policy-set
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_set_namespace: local-cluster-acm-policy
+
+govern:
+  acm_policies:
+    - ingresscontroller-hostname-share

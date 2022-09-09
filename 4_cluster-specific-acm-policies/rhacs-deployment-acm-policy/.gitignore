@@ -1,0 +1,3 @@
+*.yaml*
+!Chart.yaml
+!values.yaml

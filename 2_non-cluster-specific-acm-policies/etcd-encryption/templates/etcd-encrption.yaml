@@ -1,0 +1,47 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.acm_policy_name }}
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: config.openshift.io/v1
+                kind: APIServer
+                metadata:
+                  name: cluster
+                spec:
+                  encryption:
+                    type: aescbc
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.acm_policy_name }}-kubeapi
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operator.openshift.io/v1
+                kind: KubeAPIServer
+                metadata:
+                  name: cluster
+                status:
+                  conditions:
+                    - message: "All resources encrypted: secrets, configmaps"
+                      reason: EncryptionCompleted

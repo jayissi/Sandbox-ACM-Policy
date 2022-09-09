@@ -1,0 +1,31 @@
+---
+acm_policy_name: migrate-cluster-resources-to-infra-nodes
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_namespace: acm-policy
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: inform
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: low
+
+#
+# migrate_{*_openshift_resource} key accepts a boolean vaule: 'true' or 'false'
+#
+migrate_openshift_dns: true
+migrate_ingress_controller: true
+migrate_image_registry: true
+migrate_openshift_monitoring: true
+
+#
+# replicas accepts interger value
+#
+ingress_controller_replicas: 3
+image_registry_replicas: 3

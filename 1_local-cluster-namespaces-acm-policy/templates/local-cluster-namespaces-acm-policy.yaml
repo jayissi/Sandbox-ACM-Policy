@@ -1,0 +1,78 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: {{ $.Values.acm_policy_name }}-placement
+  namespace: {{ $.Values.policy_namespace | default "default"}}
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: local-cluster
+        operator: In
+        values:
+          - "true"
+  clusterConditions:
+    - status: "True"
+      type: ManagedClusterConditionAvailable
+
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: {{ $.Values.acm_policy_name }}-placement
+  namespace: {{ $.Values.policy_namespace | default "default"}}
+placementRef:
+  name: {{ $.Values.acm_policy_name }}-placement
+  apiGroup: apps.open-cluster-management.io
+  kind: PlacementRule
+subjects:
+  - name: {{ $.Values.acm_policy_name }}
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
+
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default"}}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.all.default_namespace }}-namespace
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: Namespace
+                apiVersion: v1
+                metadata:
+                  name: {{ $.Values.all.default_namespace }}
+                  annotations: 
+                    openshift.io/description: ACM policy configuration namespace applied to all clusters managed my ACM
+    {{- range .Values.all.cluster_names }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{.}}-{{ $.Values.all.default_namespace }}-namespace
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                kind: Namespace
+                apiVersion: v1
+                metadata:
+                  name: {{.}}-{{ $.Values.all.default_namespace }}
+                  annotations: 
+                    openshift.io/description: ACM policy configuration namespace specified for cluster "{{.}}"
+    {{- end -}}

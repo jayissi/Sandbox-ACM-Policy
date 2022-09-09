@@ -1,0 +1,50 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.cluster_name }}-{{ $.Values.default_namespace }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: create-custom-ca-bundle-config-map
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                data:
+                  ca-bundle.crt: |
+                    {{- .Files.Get .Values.tls.caPath | trim | nindent 20 }}
+                kind: ConfigMap
+                metadata:
+                  name: {{ $.Values.ca_cert_configmap_name }}
+                  namespace: openshift-config
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: update-cluster-wide-proxy-config
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: config.openshift.io/v1
+                kind: Proxy
+                metadata:
+                  name: cluster
+                  spec:
+                    httpProxy: {{ $.Values.http_proxy }}
+                    httpsProxy: {{ tpl .Values.https_proxy . }}
+                    noProxy: {{ $.Values.no_proxy_domain }}
+                    trustedCA:
+                      name: {{ $.Values.ca_cert_configmap_name }}

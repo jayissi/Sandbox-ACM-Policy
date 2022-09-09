@@ -1,0 +1,28 @@
+---
+acm_policy_name: openshift-api-certificate
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: inform
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: low
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace value is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: sandbox
+default_namespace: acm-policy
+
+api_cert_secret_name: api-cert-secret
+openshift_cluster_api_domain: api.sandbox.ocp.aws.example.redhat.com
+
+tls:
+  certPath: tls/tls.crt
+  keyPath: tls/tls.key

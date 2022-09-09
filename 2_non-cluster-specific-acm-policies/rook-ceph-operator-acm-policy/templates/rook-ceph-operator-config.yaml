@@ -1,0 +1,61 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.acm_policy_name }}
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ConfigMap
+                metadata:
+                  name: rook-ceph-operator-config
+                  namespace: openshift-storage
+                data:
+                  CSI_PLUGIN_TOLERATIONS: |2-
+                  {{ if $.Values.enable_infra_taints -}}
+                    {{- range $k, $v := $.Values.taints.infra }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end -}}
+                  {{- if $.Values.enable_odf_taints -}}
+                    {{- range $k, $v := $.Values.taints.odf }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end }}
+                  CSI_PROVISIONER_TOLERATIONS: |2-
+                  {{ if $.Values.enable_infra_taints -}}
+                    {{- range $k, $v := $.Values.taints.infra }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end -}}
+                  {{- if $.Values.enable_odf_taints -}}
+                    {{- range $k, $v := $.Values.taints.odf }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end }}

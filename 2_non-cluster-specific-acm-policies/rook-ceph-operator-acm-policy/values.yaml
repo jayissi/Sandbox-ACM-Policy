@@ -1,0 +1,35 @@
+---
+acm_policy_name: rook-ceph-operator-tolerations
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_namespace: acm-policy
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: inform
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+enable_odf_taints: true
+enable_infra_taints: true
+taints:
+  odf:
+    - key: node.ocs.openshift.io/storage
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
+  infra:
+    - key: node-role.kubernetes.io/infra
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/infra
+      operator: Equal
+      value: "true"
+      effect: NoExecute

@@ -1,0 +1,20 @@
+---
+acm_policy_name: acm-policy-set
+cluster_name: sandbox
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+default_namespace: acm-policy
+
+cluster:
+  acm_policy:
+    - cluster-autoscaler
+    - gp3-encrypted-sc
+    - machineset
+    - odf-deployment
+    - openshift-api-certificate
+    - openshift-ingress-certificate

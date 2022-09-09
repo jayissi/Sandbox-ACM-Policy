@@ -1,0 +1,39 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  disabled: false
+  policy-templates:
+  - objectDefinition:
+      apiVersion: policy.open-cluster-management.io/v1
+      kind: ConfigurationPolicy
+      metadata:
+        name: 'checkfipscompliance'
+      spec:
+        remediationAction: {{ $.Values.remediation_action | default "inform" }}
+        severity: {{ $.Values.severity | default "low" }}
+        object-templates:
+          - complianceType: musthave
+            objectDefinition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfig
+              metadata:
+                labels:
+                  machineconfiguration.openshift.io/role: worker
+                name: 99-worker-fips
+              spec:
+                fips: true
+          - complianceType: musthave
+            objectDefinition:
+              apiVersion: machineconfiguration.openshift.io/v1
+              kind: MachineConfig
+              metadata:
+                labels:
+                  machineconfiguration.openshift.io/role: master
+                name: 99-master-fips
+              spec:
+                fips: true

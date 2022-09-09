@@ -1,0 +1,219 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+  {{- if $.Values.migrate_openshift_dns }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-dns-migration
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operator.openshift.io/v1
+                kind: DNS
+                metadata:
+                  name: default
+                spec:
+                  nodePlacement:
+                    nodeSelector:
+                      node-role.kubernetes.io/infra: ""
+                    tolerations:
+                    - effect: NoSchedule
+                      key: node-role.kubernetes.io/infra
+                      operator: Equal
+                      value: "true"
+                    - effect: NoExecute
+                      key: node-role.kubernetes.io/infra
+                      operator: Equal
+                      value: "true"
+    {{- end }}
+    {{- if $.Values.migrate_ingress_controller }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: ingress-controller-migration
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: operator.openshift.io/v1
+                kind: IngressController
+                metadata:
+                  name: default
+                  namespace: openshift-ingress-operator
+                spec:
+                  nodePlacement:
+                    nodeSelector:
+                      matchLabels:
+                        node-role.kubernetes.io/infra: ""
+                    tolerations:
+                    - effect: NoSchedule
+                      key: node-role.kubernetes.io/infra
+                      operator: Equal
+                      value: "true"
+                    - effect: NoExecute
+                      key: node-role.kubernetes.io/infra
+                      operator: Equal
+                      value: "true"
+                  replicas: {{ $.Values.ingress_controller_replicas }}
+    {{- end }}
+    {{- if $.Values.migrate_image_registry }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: internal-image-registry-migration
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: imageregistry.operator.openshift.io/v1
+                kind: Config
+                metadata:
+                  name: cluster
+                spec:
+                  nodeSelector:
+                    node-role.kubernetes.io/infra: ""
+                  replicas: {{ $.Values.image_registry_replicas }}
+                  tolerations:
+                  - effect: NoSchedule
+                    key: node-role.kubernetes.io/infra
+                    operator: Equal
+                    value: "true"
+                  - effect: NoExecute
+                    key: node-role.kubernetes.io/infra
+                    operator: Equal
+                    value: "true"
+    {{- end }}
+    {{- if $.Values.migrate_openshift_monitoring }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: openshift-monitoring-migration
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ConfigMap
+                metadata:
+                  name: cluster-monitoring-config
+                  namespace: openshift-monitoring
+                data:
+                  config.yaml: |+
+                    alertmanagerMain:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    prometheusK8s:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    prometheusOperator:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    grafana:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    k8sPrometheusAdapter:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    kubeStateMetrics:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    telemeterClient:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                    openshiftStateMetrics:
+                      nodeSelector:
+                        node-role.kubernetes.io/infra: ""
+                      tolerations:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        operator: Equal
+                        value: "true"
+    {{- end -}}

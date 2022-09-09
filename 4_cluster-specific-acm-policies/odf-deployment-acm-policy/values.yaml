@@ -1,0 +1,33 @@
+---
+acm_policy_name: odf-deployment
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: inform
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: sandbox
+default_namespace: acm-policy
+
+openshift_version: "4.10"
+
+#
+# ocs_size value can only be 'small' (512Gi), 'standard' (2Ti), or 'large' (4Ti).
+#
+ocs_size: small
+
+#
+# enable_cephfs_default_storageclass accept boolean value: 'true' or 'false'
+#
+enable_cephfs_default_storageclass: true
