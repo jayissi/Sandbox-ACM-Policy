@@ -25,16 +25,16 @@ spec:
                 metadata:
                   labels:
                     #machine.openshift.io/cluster-api-cluster: {{ $.Values.cluster_id }}
-                    machine.openshift.io/cluster-api-cluster: '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}'
+                    machine.openshift.io/cluster-api-cluster: {{ '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}' }}
                   #name: {{ $.Values.cluster_id }}-{{ .type }}-{{ .availability_zone }}
-                  name: '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}-{{ .type }}-{{ .availability_zone }}'
+                  name: {{ '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}-{{ .type }}-{{ .availability_zone }}' }}
                   namespace: openshift-machine-api
                 spec:
                   replicas: 1
                   selector:
                     matchLabels:
                       #machine.openshift.io/cluster-api-cluster: {{ $.Values.cluster_id }}
-                      machine.openshift.io/cluster-api-cluster: '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}'
+                      machine.openshift.io/cluster-api-cluster: {{ '{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}' }}
                       machine.openshift.io/cluster-api-machineset: {{ $.Values.cluster_id }}-{{ .type }}-{{ .availability_zone }}
                   template:
                     metadata:
