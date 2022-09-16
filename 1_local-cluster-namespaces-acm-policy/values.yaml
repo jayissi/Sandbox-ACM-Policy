@@ -1,5 +1,10 @@
 ---
-acm_policy_name: acm-cluster-namespaces-test-2
+acm_policy_name: acm-cluster-namespaces
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_namespace: argo-managed-acm-policies
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -20,6 +25,6 @@ all:
     - local-cluster
     - sandbox
     - development
-    - testing
+    - test
     - qa
     - production
