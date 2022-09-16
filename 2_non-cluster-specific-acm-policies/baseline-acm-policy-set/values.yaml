@@ -9,7 +9,8 @@ policy_set_namespace: acm-policy
 baseline:
   acm_policy:
     - etcd-encryption
-    - machineconfigpool
-    - tls-v1.2-security-profile
-    - migrate-cluster-resources-to-infra-nodes
-    - compliance-operator
+    - fips-check
+#    - machineconfigpool
+#    - tls-v1.2-security-profile
+#    - migrate-cluster-resources-to-infra-nodes
+#    - compliance-operator
