@@ -1,36 +1,4 @@
 ---
-apiVersion: apps.open-cluster-management.io/v1
-kind: PlacementRule
-metadata:
-  name: {{ $.Values.acm_policy_name }}-placement
-  namespace: {{ $.Values.policy_namespace | default "default"}}
-spec:
-  clusterSelector:
-    matchExpressions:
-      - key: local-cluster
-        operator: In
-        values:
-          - "true"
-  clusterConditions:
-    - status: "True"
-      type: ManagedClusterConditionAvailable
-
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: {{ $.Values.acm_policy_name }}-placement
-  namespace: {{ $.Values.policy_namespace | default "default"}}
-placementRef:
-  name: {{ $.Values.acm_policy_name }}-placement
-  apiGroup: apps.open-cluster-management.io
-  kind: PlacementRule
-subjects:
-  - name: {{ $.Values.acm_policy_name }}
-    apiGroup: policy.open-cluster-management.io
-    kind: Policy
-
----
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
