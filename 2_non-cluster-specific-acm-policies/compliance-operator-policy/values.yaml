@@ -9,7 +9,7 @@ policy_namespace: acm-policy
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
 #
-remediation_action: inform
+remediation_action: enforce
 
 #
 # severity defaults to 'low' but, can be set to 'medium' or 'high'
