@@ -24,6 +24,7 @@ default_namespace: acm-policy
 externalSecrets:
   - name: ingress.crt
     namespace: test
+    refreshInterval: 15s
     secretStoreRefName: vault
     tlsSecret: false
     secretData:
