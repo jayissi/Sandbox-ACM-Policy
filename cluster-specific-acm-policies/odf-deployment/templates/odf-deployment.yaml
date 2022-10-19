@@ -145,7 +145,7 @@ spec:
                   displayName: OpenShift Data Foundation
                 status:
                   phase: Succeeded
-    {{- if $.Values.enable_cephfs_default_storageclass }}
+    {{- if eq $.Values.enable_cephfs_default_storageclass true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy

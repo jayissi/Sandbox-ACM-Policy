@@ -1,5 +1,5 @@
 ---
-acm_policy_name: gp3-encrypted-sc
+acm_policy_name: external-secrets
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -20,4 +20,16 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-encrypted_gp3_storageclass: true
+
+externalSecrets:
+  - name: ingress.crt
+    namespace: test
+    secretStoreRefName: vault
+    tlsSecret: false
+    secretData:
+      - secretKey: tls.crt
+        remoteRefKey: test/certs/api
+      - secretKey: tls.key
+        remoteRefKey: test/certs/api
+      - secretKey: ca.crt
+        remoteRefKey: test/certs/api

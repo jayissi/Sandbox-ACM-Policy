@@ -8,7 +8,7 @@ spec:
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
-  {{- if $.Values.migrate_openshift_dns }}
+  {{- if eq $.Values.migrate_openshift_dns true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -37,8 +37,8 @@ spec:
                       key: node-role.kubernetes.io/infra
                       operator: Equal
                       value: "true"
-    {{- end }}
-    {{- if $.Values.migrate_ingress_controller }}
+  {{- end }}
+  {{- if eq $.Values.migrate_ingress_controller true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -70,8 +70,8 @@ spec:
                       operator: Equal
                       value: "true"
                   replicas: {{ $.Values.ingress_controller_replicas }}
-    {{- end }}
-    {{- if $.Values.migrate_image_registry }}
+  {{- end }}
+  {{- if eq $.Values.migrate_image_registry true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -100,8 +100,8 @@ spec:
                     key: node-role.kubernetes.io/infra
                     operator: Equal
                     value: "true"
-    {{- end }}
-    {{- if $.Values.migrate_openshift_monitoring }}
+  {{- end }}
+  {{- if eq $.Values.migrate_openshift_monitoring true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -216,4 +216,4 @@ spec:
                         key: node-role.kubernetes.io/infra
                         operator: Equal
                         value: "true"
-    {{- end -}}
+  {{- end -}}

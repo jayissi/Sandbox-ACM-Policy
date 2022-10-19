@@ -12,9 +12,8 @@ default_namespace: acm-policy
 
 cluster:
   acm_policy:
-    - cluster-autoscaler
     - gp3-encrypted-sc
     - machineset
     - odf-deployment
-    - openshift-api-certificate
-    - openshift-ingress-certificate
+#    - openshift-api-certificate
+#    - openshift-ingress-certificate

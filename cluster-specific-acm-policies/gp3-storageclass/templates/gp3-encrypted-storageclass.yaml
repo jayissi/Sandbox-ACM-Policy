@@ -25,7 +25,7 @@ spec:
                 metadata:
                   name: gp3
                 parameters:
-                {{- if .Values.encrypted_gp3_storageclass }}
+                {{- if eq .Values.encrypted_gp3_storageclass true }}
                   encrypted: "true"
                   kmsKeyId: >-
                     {{ `{{ fromSecret "" "kms-key" "arn" }}` }}
