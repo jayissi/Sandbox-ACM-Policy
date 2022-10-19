@@ -1,0 +1,12 @@
+---
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: {{ $.Values.acm_policy_set_name }}
+  namespace: {{ $.Values.policy_set_namespace | default "default" }}
+spec:
+  description: "Set of basline ACM policies applied to all cluster(s) managed by Openshift's ACM"
+  policies:
+  {{- range .Values.baseline.acm_policy }}
+    - {{.}}
+  {{- end -}}

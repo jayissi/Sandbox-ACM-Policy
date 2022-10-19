@@ -1,0 +1,12 @@
+---
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+spec:
+  description: ACM policies specific to cluster "{{ $.Values.cluster_name }}"
+  policies:
+  {{- range .Values.cluster.acm_policy }}
+    - {{ $.Values.cluster_name }}-{{.}}
+  {{- end -}}

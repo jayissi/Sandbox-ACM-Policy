@@ -1,5 +1,5 @@
 ---
-acm_policy_name: disable-self-provisioner-crb
+acm_policy_name: odf-deployment
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -19,3 +19,15 @@ policy_namespace:
 #
 cluster_name: local-cluster
 default_namespace: acm-policy
+
+openshift_version: "4.10"
+
+#
+# ocs_size value can only be 'small' (512Gi), 'standard' (2Ti), or 'large' (4Ti).
+#
+ocs_size: small
+
+#
+# enable_cephfs_default_storageclass accept boolean value: 'true' or 'false'
+#
+enable_cephfs_default_storageclass: true

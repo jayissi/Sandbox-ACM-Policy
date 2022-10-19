@@ -1,10 +1,10 @@
 ---
-acm_policy_name: disable-self-provisioner-crb
+acm_policy_name: openshift-ingress-certificate
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
 #
-remediation_action: enforce
+remediation_action: inform
 
 #
 # severity defaults to 'low' but, can be set to 'medium' or 'high'
@@ -19,3 +19,12 @@ policy_namespace:
 #
 cluster_name: local-cluster
 default_namespace: acm-policy
+
+update_proxy_with_root_ca: true
+ca_cert_configmap_name: custom-ca-bundle
+ingress_cert_secret_name: apps-cert-secret
+
+tls:
+  certPath: tls/tls.crt
+  keyPath: tls/tls.key
+  caPath: tls/ca.crt

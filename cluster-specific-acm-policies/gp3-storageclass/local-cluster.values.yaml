@@ -1,5 +1,5 @@
 ---
-acm_policy_name: disable-self-provisioner-crb
+acm_policy_name: gp3-encrypted-sc
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -19,3 +19,5 @@ policy_namespace:
 #
 cluster_name: local-cluster
 default_namespace: acm-policy
+
+encrypted_gp3_storageclass: true

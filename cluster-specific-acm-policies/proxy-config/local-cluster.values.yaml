@@ -1,0 +1,22 @@
+---
+acm_policy_name: openshift-proxy-config
+cluster_name: local-cluster
+default_namespace: acm-policy
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: inform
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+
+http_proxy: http://proxy.sandbox.ocp.aws.example.redhat.com
+https_proxy: "{{ .Values.http_proxy }}"
+no_proxy_domain: .sandbox.ocp.aws.example.redhat.com,sandbox.ocp.aws.example.redhat.com
+ca_cert_configmap_name: user-ca-bundle
+tls:
+  caPath: tls/ca.crt

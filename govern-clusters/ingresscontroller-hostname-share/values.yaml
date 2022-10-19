@@ -1,0 +1,19 @@
+---
+acm_policy_name: ingresscontroller-hostname-share
+cluster_name: local-cluster
+default_namespace: acm-policy
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_namespace:
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: enforce
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: low

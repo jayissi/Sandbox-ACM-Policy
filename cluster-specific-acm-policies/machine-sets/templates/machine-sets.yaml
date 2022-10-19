@@ -1,0 +1,153 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+  {{- range .Values.machines }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ .type }}-zone-{{ .availability_zone }}-{{ $.Values.acm_policy_name }}
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: machine.openshift.io/v1beta1
+                kind: MachineSet
+                metadata:
+                  labels:
+                    machine.openshift.io/cluster-api-cluster: >-
+                      {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}
+                  name: >-
+                    {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-{{ .type }}-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                  namespace: openshift-machine-api
+                spec:
+                  replicas: 1
+                  selector:
+                    matchLabels:
+                      machine.openshift.io/cluster-api-cluster: >-
+                        {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}
+                      machine.openshift.io/cluster-api-machineset: >-
+                        {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-{{ .type }}-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                  template:
+                    metadata:
+                      labels:
+                        machine.openshift.io/cluster-api-cluster: >-
+                          {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}
+                        {{ if eq .type "app" -}} 
+                        machine.openshift.io/cluster-api-machine-role: worker 
+                        {{- else -}} 
+                        machine.openshift.io/cluster-api-machine-role: infra 
+                        {{- end }}
+                        machine.openshift.io/cluster-api-machine-type: worker
+                        machine.openshift.io/cluster-api-machineset: >-
+                          {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-{{ .type }}-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                    spec:
+                      lifecycleHooks: {}
+                      metadata:
+                      {{- if eq .type "app" }}
+                        labels:
+                          node-role.kubernetes.io/app: ""
+                          node-role.kubernetes.io/worker: ""
+                      {{- else if eq .type "odf" }}
+                        labels:
+                          node-role.kubernetes.io/odf: ""
+                          node-role.kubernetes.io/infra: ""
+                          node-role.kubernetes.io/worker: ""
+                          cluster.ocs.openshift.io/openshift-storage: ""
+                      taints:
+                      - effect: NoSchedule
+                        key: node.ocs.openshift.io/storage
+                        value: "true"
+                      {{- else if eq .type "infra" }}
+                        labels:
+                          node-role.kubernetes.io/infra: ""
+                          node-role.kubernetes.io/worker: ""
+                          node-role.kubernetes.io/cluster-infra: ""
+                      taints:
+                      - effect: NoSchedule
+                        key: node-role.kubernetes.io/infra
+                        value: "true"
+                      - effect: NoExecute
+                        key: node-role.kubernetes.io/infra
+                        value: "true"
+                      {{- end }}
+                      providerSpec:
+                        value:
+                          ami:
+                            id: {{ $.Values.ami_id }}
+                          apiVersion: awsproviderconfig.openshift.io/v1beta1
+                          blockDevices:
+                          - ebs:
+                            {{- if $.Values.enable_kms_encryption }}
+                              encrypted: true
+                              kmsKey:
+                                arn: >-
+                                  {{ `{{ fromSecret "" "kms-key" "arn" }}` }}
+                            {{- end }}
+                              volumeSize: {{ $.Values.storage_size | default "120" }}
+                              volumeType: {{ $.Values.storage_type | default "gp2" }}
+                          credentialsSecret:
+                            name: aws-cloud-credentials
+                          deviceIndex: 0
+                          iamInstanceProfile:
+                            id: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-worker-profile
+                          {{ if eq .type "app" -}}
+                          instanceType: {{ $.Values.app_instanceType | default "r5.xlarge" }}
+                          {{- else if eq .type "odf" -}}
+                          instanceType: {{ $.Values.odf_instanceType | default "m5.2xlarge" }}
+                          {{- else if eq .type "infra" -}}
+                          instanceType: {{ $.Values.infra_instanceType | default "m5.xlarge" }}
+                          {{- end }}
+                          kind: AWSMachineProviderConfig
+                          metadata:
+                            creationTimestamp: null
+                          placement:
+                            availabilityZone: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                            region: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}
+                          securityGroups:
+                          - filters:
+                            - name: 'tag:Name'
+                              values:
+                              - >-
+                                {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-worker-sg
+                          subnet:
+                          {{- if $.Values.machineset_use_subnet_id }}
+                            id: {{ .subnet_id }}
+                          {{- else }}
+                            filters:
+                              - name: 'tag:Name'
+                                values:
+                                  - >-
+                                    {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-private-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                          {{- end }}
+                          tags:
+                          - name: 'kubernetes.io/cluster/{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}'
+                            value: owned
+                          - name: environment
+                            value: {{ $.Values.env }}
+                          - name: region
+                            value: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}
+                          - name: availability_zone
+                            value: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                          - name: machine_type
+                            value: {{ .type }}
+                          - name: machine_name
+                            value: >-
+                              {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-{{ .type }}-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
+                          userDataSecret:
+                            name: worker-user-data
+  {{- end -}}

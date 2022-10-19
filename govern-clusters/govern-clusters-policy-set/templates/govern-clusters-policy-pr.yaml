@@ -1,0 +1,16 @@
+---
+apiVersion: apps.open-cluster-management.io/v1
+kind: PlacementRule
+metadata:
+  name: {{ $.Values.acm_policy_set_name }}-placement
+  namespace: {{ $.Values.policy_set_namespace | default "default" }}
+spec:
+  clusterSelector:
+    matchExpressions:
+      - key: name
+        operator: NotIn
+        values:
+          - local-cluster
+  clusterConditions:
+    - status: "True"
+      type: ManagedClusterConditionAvailable
