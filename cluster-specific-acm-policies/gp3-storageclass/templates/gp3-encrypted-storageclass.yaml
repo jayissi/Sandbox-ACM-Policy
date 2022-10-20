@@ -28,7 +28,7 @@ spec:
                 {{- if eq .Values.encrypted_gp3_storageclass true }}
                   encrypted: "true"
                   kmsKeyId: >-
-                    {{ `{{ fromSecret "" "kms-key" "arn" }}` }}
+                    {{ `{{ fromSecret "" "kms-key" "arn" | base64dec }}` }}
                 {{- end }}
                   fsType: ext4
                   type: gp3

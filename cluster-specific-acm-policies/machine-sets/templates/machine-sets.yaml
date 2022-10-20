@@ -87,11 +87,11 @@ spec:
                           apiVersion: awsproviderconfig.openshift.io/v1beta1
                           blockDevices:
                           - ebs:
-                            {{- if $.Values.enable_kms_encryption }}
+                            {{- if eq $.Values.enable_kms_encryption true }}
                               encrypted: true
                               kmsKey:
                                 arn: >-
-                                  {{ `{{ fromSecret "" "kms-key" "arn" }}` }}
+                                  {{ `{{ fromSecret "" "kms-key" "arn" | base64dec }}` }}
                             {{- end }}
                               volumeSize: {{ $.Values.storage_size | default "120" }}
                               volumeType: {{ $.Values.storage_type | default "gp2" }}
@@ -123,7 +123,7 @@ spec:
                               - >-
                                 {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-worker-sg
                           subnet:
-                          {{- if $.Values.machineset_use_subnet_id }}
+                          {{- if eq $.Values.machineset_use_subnet_id true }}
                             id: {{ .subnet_id }}
                           {{- else }}
                             filters:
