@@ -12,6 +12,7 @@ baseline:
     - rhacs-operator
     - etcd-encryption
     - machineconfigpool
+    - compliance-scan
     - compliance-operator
     - rhacs-secure-cluster
     - tls-v1.2-security-profile

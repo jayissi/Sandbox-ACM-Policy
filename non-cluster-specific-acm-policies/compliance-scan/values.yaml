@@ -1,4 +1,22 @@
 ---
+acm_policy_name: compliance-scan
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_namespace: acm-policy
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: enforce
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+
 apply_auto_remediations: false
 
 node:
@@ -41,7 +59,6 @@ node:
         value: "true"
         effect: NoExecute
     scan_profile:
-      - name: ocp4-cis
       - name: ocp4-cis-node
 
   - type: odf
@@ -66,7 +83,6 @@ node:
       operator: Exists
       effect: NoSchedule
     scan_profile:
-      - name: ocp4-cis
       - name: ocp4-cis-node
 
   - type: app
@@ -75,5 +91,4 @@ node:
     selector: |-
       node-role.kubernetes.io/app: ''
     scan_profile:
-      - name: ocp4-cis
       - name: ocp4-cis-node
