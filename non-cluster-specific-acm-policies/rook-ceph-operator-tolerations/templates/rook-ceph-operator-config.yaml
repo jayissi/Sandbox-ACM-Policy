@@ -46,7 +46,6 @@ spec:
                     {{- range $k, $v := $.Values.taints.master }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end }}
@@ -71,7 +70,6 @@ spec:
                     {{- range $k, $v := $.Values.taints.master }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end }}
