@@ -91,7 +91,7 @@ spec:
                               encrypted: true
                               kmsKey:
                                 arn: >-
-                                  {{ `{{ fromSecret "" "kms-key" "arn" | base64dec }}` }}
+                                  {{ `{{ fromSecret "local-cluster-acm-policy" "kms-key" "arn" | base64dec }}` }}
                             {{- end }}
                               volumeSize: {{ $.Values.storage_size | default "120" }}
                               volumeType: {{ $.Values.storage_type | default "gp2" }}

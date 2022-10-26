@@ -22,15 +22,11 @@ default_namespace: acm-policy
 
 
 externalSecrets:
-  - name: ingress.crt
+  - name: kms-key
     namespace: test
     refreshInterval: 15s
     secretStoreRefName: vault
     tlsSecret: false
     secretData:
-      - secretKey: tls.crt
-        remoteRefKey: test/certs/api
-      - secretKey: tls.key
-        remoteRefKey: test/certs/api
-      - secretKey: ca.crt
-        remoteRefKey: test/certs/api
+      - secretKey: arn
+        remoteRefKey: local-cluster-acm-policy/kms-key
