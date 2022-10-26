@@ -23,7 +23,7 @@ default_namespace: acm-policy
 
 externalSecrets:
   - name: kms-key
-    namespace: test
+    namespace: local-cluster-acm-policy
     refreshInterval: 15s
     secretStoreRefName: vault
     tlsSecret: false
