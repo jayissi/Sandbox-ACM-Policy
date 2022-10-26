@@ -52,7 +52,9 @@ spec:
                     - key: {{ $v.key }}
                       effect: {{ $v.effect }}
                       operator: {{ $v.operator }}
+                      {{- if $v.value }}
                       value: {{ squote $v.value }}
+                      {{- end -}}
                     {{- end -}}
                 {{- end }}
                   pvAccessModes:

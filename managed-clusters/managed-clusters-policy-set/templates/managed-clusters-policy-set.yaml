@@ -7,6 +7,6 @@ metadata:
 spec:
   description: "Set of ACM policies applied to all cluster(s) that is NOT labeled 'local-cluster'"
   policies:
-  {{- range .Values.govern.acm_policies }}
+  {{- range .Values.managed_clusters.acm_policies }}
     - {{.}}
   {{- end -}}

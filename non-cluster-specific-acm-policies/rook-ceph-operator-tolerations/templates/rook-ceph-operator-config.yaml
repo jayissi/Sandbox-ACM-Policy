@@ -25,7 +25,7 @@ spec:
                   name: rook-ceph-operator-config
                   namespace: openshift-storage
                 data:
-                  CSI_PLUGIN_TOLERATIONS: |2-
+                  CSI_PLUGIN_TOLERATIONS: |-
                   {{ if $.Values.taints.infra -}}
                     {{- range $k, $v := $.Values.taints.infra }}
                     - key: {{ $v.key }}
@@ -49,7 +49,7 @@ spec:
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end }}
-                  CSI_PROVISIONER_TOLERATIONS: |2-
+                  CSI_PROVISIONER_TOLERATIONS: |-
                   {{ if $.Values.taints.infra -}}
                     {{- range $k, $v := $.Values.taints.infra }}
                     - key: {{ $v.key }}
