@@ -1,4 +1,0 @@
-*.yaml*
-!Chart.yaml
-!values.yaml
-!templates/rhacs-deployment.yaml
