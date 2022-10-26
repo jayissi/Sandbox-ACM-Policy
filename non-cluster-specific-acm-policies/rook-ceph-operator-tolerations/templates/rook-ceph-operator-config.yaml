@@ -26,36 +26,52 @@ spec:
                   namespace: openshift-storage
                 data:
                   CSI_PLUGIN_TOLERATIONS: |2-
-                  {{ if $.Values.enable_infra_taints -}}
+                  {{ if $.Values.taints.infra -}}
                     {{- range $k, $v := $.Values.taints.infra }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ $v.value }}
+                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end -}}
-                  {{- if $.Values.enable_odf_taints -}}
+                  {{- if $.Values.taints.odf -}}
                     {{- range $k, $v := $.Values.taints.odf }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ $v.value }}
+                      value: {{ squote $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end }}
+                  {{- if $.Values.taints.master -}}
+                    {{- range $k, $v := $.Values.taints.master }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end }}
                   CSI_PROVISIONER_TOLERATIONS: |2-
-                  {{ if $.Values.enable_infra_taints -}}
+                  {{ if $.Values.taints.infra -}}
                     {{- range $k, $v := $.Values.taints.infra }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ $v.value }}
+                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end -}}
-                  {{- if $.Values.enable_odf_taints -}}
+                  {{- if $.Values.taints.odf -}}
                     {{- range $k, $v := $.Values.taints.odf }}
                     - key: {{ $v.key }}
                       operator: {{ $v.operator }}
-                      value: {{ $v.value }}
+                      value: {{ squote $v.value }}
+                      effect: {{ $v.effect }}
+                   {{- end -}}
+                  {{- end }}
+                  {{- if $.Values.taints.master -}}
+                    {{- range $k, $v := $.Values.taints.master }}
+                    - key: {{ $v.key }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
                       effect: {{ $v.effect }}
                    {{- end -}}
                   {{- end }}

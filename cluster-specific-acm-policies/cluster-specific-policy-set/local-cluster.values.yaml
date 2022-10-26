@@ -12,8 +12,9 @@ default_namespace: acm-policy
 
 cluster:
   acm_policy:
-    - gp3-encrypted-sc
     - machineset
+    - rhacs-central
     - odf-deployment
+    - gp3-encrypted-sc
 #    - openshift-api-certificate
 #    - openshift-ingress-certificate

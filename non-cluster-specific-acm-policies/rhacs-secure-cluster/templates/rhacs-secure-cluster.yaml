@@ -1,0 +1,105 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default "default" }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: {{ $.Values.acm_policy_name }}
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: platform.stackrox.io/v1alpha1
+                kind: SecuredCluster
+                metadata:
+                  name: stackrox-secured-cluster-services
+                  namespace: stackrox
+                spec:
+                  centralEndpoint: >-
+                    {{ `{{- if eq (print (lookup "route.openshift.io/v1" "Route" "stackrox" "central").spec.host) "local-cluster" }}` }}
+                    {{ `{{- range $index, $ports := (lookup "v1" "Service" "stackrox" "central").spec.ports }}` }}
+                      {{ `{{ (lookup "route.openshift.io/v1" "Route" "stackrox" "central").spec.host }}` }}:{{ `{{ $ports.port }}` }}
+                    {{ `{{- end }}` }}
+                    {{ `{{- else }}` }}
+                      {{ `{{ fromSecret "stackrox" "acs-central-url" "fqdn" | base64dec }}` }}:{{ `{{ fromSecret "stackrox" "acs-central-url" "port" | base64dec }}` }}
+                    {{ `{{- end }}` }}
+                  clusterName: >-
+                    {{ `{{ fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec }}` }}
+                  auditLogs:
+                    collection: Auto
+                  admissionControl:
+                    listenOnUpdates: true
+                  {{- if eq $.Values.node.enableTolerations true }}
+                    nodeSelector:
+                      {{ $.Values.node.selector }}
+                    tolerations:
+                    {{- range $k, $v := $.Values.node.tolerations }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
+                    {{- end -}}
+                  {{- end }}
+                    bypass: BreakGlassAnnotation
+                    contactImageScanners: DoNotScanInline
+                    listenOnCreates: true
+                    timeoutSeconds: 20
+                    listenOnEvents: true
+                  sensor:
+                  {{- if eq $.Values.node.enableTolerations true }}
+                    nodeSelector:
+                      {{ $.Values.node.selector }}
+                    tolerations:
+                    {{- range $k, $v := $.Values.node.tolerations }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
+                    {{- end -}}
+                  {{- end }}
+                  scanner:
+                    analyzer:
+                    {{- if eq $.Values.node.enableTolerations true }}
+                      nodeSelector:
+                        {{ $.Values.node.selector }}
+                      tolerations:
+                      {{- range $k, $v := $.Values.node.tolerations }}
+                        - key: {{ $v.key }}
+                          effect: {{ $v.effect }}
+                          operator: {{ $v.operator }}
+                          value: {{ squote $v.value }}
+                      {{- end -}}
+                    {{- end }}
+                      scaling:
+                        autoScaling: Enabled
+                        maxReplicas: 5
+                        minReplicas: 2
+                        replicas: 3
+                    db:
+                    {{- if eq $.Values.node.enableTolerations true }}
+                      nodeSelector:
+                        {{ $.Values.node.selector }}
+                      tolerations:
+                      {{- range $k, $v := $.Values.node.tolerations }}
+                        - key: {{ $v.key }}
+                          effect: {{ $v.effect }}
+                          operator: {{ $v.operator }}
+                          value: {{ squote $v.value }}
+                      {{- end -}}
+                    {{- end }}
+                    scannerComponent: AutoSense
+                  perNode:
+                    collector:
+                      collection: EBPF
+                      imageFlavor: Regular
+                    taintToleration: TolerateTaints

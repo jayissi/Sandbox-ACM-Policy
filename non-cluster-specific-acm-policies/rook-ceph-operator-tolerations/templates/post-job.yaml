@@ -1,0 +1,22 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: rook-ceph-operator-update-
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+  namespace: "openshift-gitops"
+spec:
+  template:
+    spec:
+      restartPolicy: "OnFailure"
+      containers:
+      - name: rook-ceph-operator-update
+        image: registry.redhat.io/openshift4/ose-cli:v4.10.0
+        command:
+            - "/bin/bash"
+            - "-c"
+            - >- 
+              echo "Deleting rook-ceph-operator pod in openshift-storage namespace." &&
+              oc delete pod -n openshift-storage -l app=rook-ceph-operator &&
+              echo "Deletion Complete."

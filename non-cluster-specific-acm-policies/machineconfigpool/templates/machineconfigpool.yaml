@@ -65,6 +65,6 @@ spec:
                       node-role.kubernetes.io/odf: ""
                   {{- else if eq .type "infra" }}
                     matchLabels:
-                      node-role.kubernetes.io/infra: ""
+                      node-role.kubernetes.io/cluster-infra: ""
                   {{- end -}}
            {{- end -}}

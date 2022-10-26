@@ -12,7 +12,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: comp-operator-ns
+          name: compliance-operator-ns
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "high" }}
@@ -27,7 +27,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: comp-operator-operator-group
+          name: compliance-operator-group
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "high" }}
@@ -46,7 +46,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: comp-operator-subscription
+          name: compliance-operator-subscription
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "high" }}
@@ -67,7 +67,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: comp-operator-status
+          name: compliance-operator-status
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "high" }}

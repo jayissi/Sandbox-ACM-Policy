@@ -10,7 +10,7 @@ spec:
       - key: name
         operator: NotIn
         values:
-          - sandbox
+          - dev
   clusterConditions:
     - status: "True"
       type: ManagedClusterConditionAvailable

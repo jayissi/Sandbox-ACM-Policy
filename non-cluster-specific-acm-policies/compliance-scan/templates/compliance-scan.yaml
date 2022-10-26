@@ -1,0 +1,67 @@
+{{- range $.Values.node }}
+{{- if eq .enable_scan_setting true }}
+---
+apiVersion: compliance.openshift.io/v1alpha1
+kind: ScanSetting
+metadata:
+{{- if .name }}
+  name: {{ .type }}-{{ .name }}
+{{- else }}
+  name: {{ .type }}
+{{- end }}
+  namespace: openshift-compliance
+strictNodeScan: true
+showNotApplicable: false
+{{- if eq $.Values.apply_auto_remediations true }}
+autoApplyRemediations: true
+autoUpdateRemediations: true
+{{- end }}
+schedule: 0 1 * * *
+rawResultStorage:
+{{- if .selector }}
+  nodeSelector:
+    {{ .selector }}
+{{- end -}}
+{{- if .tolerations }}
+  tolerations:
+    {{- range $k, $v := .tolerations }}
+    - key: {{ $v.key }}
+      effect: {{ $v.effect }}
+      operator: {{ $v.operator }}
+      value: {{ squote $v.value }}
+    {{- end -}}
+{{- end }}
+  pvAccessModes:
+    - ReadWriteOnce
+  rotation: 3
+  size: 1Gi
+roles:
+  - {{ .type }}
+scanTolerations:
+  - operator: Exists
+---
+kind: ScanSettingBinding
+apiVersion: compliance.openshift.io/v1alpha1
+metadata:
+{{- if .name }}
+  name: {{ .type }}-{{ .name }}
+{{- else }}
+  name: {{ .type }}
+{{- end }}
+  namespace: openshift-compliance
+profiles:
+{{- range $k, $v := .scan_profile }}
+  - apiGroup: compliance.openshift.io/v1alpha1
+    kind: Profile
+    name: {{ $v.name }}
+{{- end }}
+settingsRef:
+  apiGroup: compliance.openshift.io/v1alpha1
+  kind: ScanSetting
+{{- if .name }}
+  name: {{ .type }}-{{ .name }}
+{{- else }}
+  name: {{ .type }}
+{{- end }}
+{{- end }}
+{{- end }}

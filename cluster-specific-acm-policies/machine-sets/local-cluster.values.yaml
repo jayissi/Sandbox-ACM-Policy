@@ -1,5 +1,5 @@
 ---
-acm_policy_name: machineset
+acm_policy_name: machine-set
 env: Sandbox Demo
 
 #
@@ -58,4 +58,4 @@ storage_type: gp3
 storage_size: 100
 app_instanceType: r5.2xlarge
 odf_instanceType: m5.4xlarge
-infra_instanceType: m5.xlarge
+infra_instanceType: m5.2xlarge
