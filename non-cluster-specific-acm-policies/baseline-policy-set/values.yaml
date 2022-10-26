@@ -15,4 +15,5 @@ baseline:
     - compliance-operator
     - rhacs-secure-cluster
     - tls-v1.2-security-profile
+    - rook-ceph-operator-tolerations
     - migrate-cluster-resources-to-infra-nodes
