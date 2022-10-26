@@ -26,7 +26,7 @@ spec:
                   namespace: stackrox
                 spec:
                   centralEndpoint: >-
-                    {{ `{{- if eq (print (lookup "route.openshift.io/v1" "Route" "stackrox" "central").spec.host) "local-cluster" }}` }}
+                    {{ `{{- if eq (fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec) "local-cluster" }}` }}
                     {{ `{{- range $index, $ports := (lookup "v1" "Service" "stackrox" "central").spec.ports }}` }}
                       {{ `{{ (lookup "route.openshift.io/v1" "Route" "stackrox" "central").spec.host }}` }}:{{ `{{ $ports.port }}` }}
                     {{ `{{- end }}` }}
