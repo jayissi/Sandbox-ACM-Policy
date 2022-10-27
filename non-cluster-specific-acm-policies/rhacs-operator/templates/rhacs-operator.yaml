@@ -21,6 +21,8 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 kind: Namespace
+                labels:
+                  argocd.argoproj.io/managed-by: openshift-gitops
                 metadata:
                   name: stackrox
     - objectDefinition:
