@@ -9,6 +9,7 @@ policy_set_namespace: acm-policy
 baseline:
   acm_policy:
     - fips-check
+    - web-terminal
     - rhacs-operator
     - etcd-encryption
     - machineconfigpool
