@@ -12,10 +12,10 @@ default_namespace: acm-policy
 
 cluster:
   acm_policy:
-    - machine-set
+    - secret-store
+    - machine-sets
     - rhacs-central
     - odf-deployment
-    - secret-store
     - external-secrets
     - gp3-encrypted-sc
 #    - openshift-api-certificate
