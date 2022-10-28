@@ -17,7 +17,7 @@ remediation_action: enforce
 severity: high
 
 
-apply_auto_remediations: true
+apply_auto_remediations: false
 
 node:
   - type: master
