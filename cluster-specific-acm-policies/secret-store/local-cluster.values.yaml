@@ -19,3 +19,5 @@ policy_namespace:
 #
 cluster_name: local-cluster
 default_namespace: acm-policy
+
+ss_namespace: openshift-storage

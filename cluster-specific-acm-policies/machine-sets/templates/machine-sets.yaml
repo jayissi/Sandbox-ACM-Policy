@@ -8,16 +8,16 @@ spec:
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
+  {{- range .Values.machines }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+          name: {{ .type }}-zone-{{ .availability_zone }}-{{ $.Values.acm_policy_name }}
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "low" }}
           object-templates:
-          {{- range .Values.machines }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: machine.openshift.io/v1beta1
@@ -150,4 +150,4 @@ spec:
                               {{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.infrastructureName }}` }}-{{ .type }}-{{ `{{ (lookup "config.openshift.io/v1" "Infrastructure" "" "cluster").status.platformStatus.aws.region }}` }}{{ .availability_zone }}
                           userDataSecret:
                             name: worker-user-data
-          {{- end -}}
+  {{- end -}}
