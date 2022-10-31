@@ -21,6 +21,8 @@ spec:
               objectDefinition:
                 kind: Namespace
                 apiVersion: v1
+                labels:
+                  argocd.argoproj.io/managed-by: openshift-gitops
                 metadata:
                   name: openshift-storage
     - objectDefinition:

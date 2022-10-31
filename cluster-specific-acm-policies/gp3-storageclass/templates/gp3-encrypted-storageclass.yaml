@@ -28,7 +28,7 @@ spec:
                 {{- if eq .Values.encrypted_gp3_storageclass true }}
                   encrypted: "true"
                   kmsKeyId: >-
-                    {{ `{{ fromSecret "local-cluster-acm-policy" "kms-key" "arn" | base64dec }}` }}
+                    {{ `{{ fromSecret "openshift-storage" "kms-key" "arn" | base64dec | trim }}` }}
                 {{- end }}
                   fsType: ext4
                   type: gp3
