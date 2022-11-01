@@ -24,9 +24,3 @@ secretstore:
   - name: vault
     namespace: openshift-storage
     role: demo
-  - name: vault
-    namespace: openshift-config
-    role: kms
-  - name: vault
-    namespace: openshift-ingress
-    role: key
