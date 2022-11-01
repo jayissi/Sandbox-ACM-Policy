@@ -19,4 +19,5 @@ cluster:
     - external-secrets
     - gp3-encrypted-sc
 #    - openshift-api-certificate
+#    - openshift-proxy-certificate
 #    - openshift-ingress-certificate

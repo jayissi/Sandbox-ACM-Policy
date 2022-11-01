@@ -20,4 +20,13 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-ss_namespace: openshift-storage
+secretstore:
+  - name: vault
+    namespace: openshift-storage
+    role: demo
+  - name: vault
+    namespace: openshift-config
+    role: kms
+  - name: vault
+    namespace: openshift-ingress
+    role: key

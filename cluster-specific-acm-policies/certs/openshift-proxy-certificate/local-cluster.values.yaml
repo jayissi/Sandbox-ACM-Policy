@@ -1,5 +1,5 @@
 ---
-acm_policy_name: openshift-proxy-config
+acm_policy_name: openshift-proxy-certificate
 cluster_name: local-cluster
 default_namespace: acm-policy
 
