@@ -31,6 +31,24 @@ externalSecrets:
       - secretKey: arn
         remoteRefKey: openshift-storage/kms-key
 
+  - name: kms-key
+    namespace: openshift-config
+    refreshInterval: 
+    secretStoreRefName: vault
+    tlsSecret: false
+    secretData:
+      - secretKey: arn
+        remoteRefKey: openshift-config/kms-key
+
+  - name: kms-key
+    namespace: openshift-ingress
+    refreshInterval: 
+    secretStoreRefName: vault
+    tlsSecret: false
+    secretData:
+      - secretKey: arn
+        remoteRefKey: openshift-ingress/kms-key
+
 #  - name: proxy-cert
 #    namespace: openshift-config
 #    refreshInterval: 15s

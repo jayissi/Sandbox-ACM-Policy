@@ -1,5 +1,5 @@
 ---
-acm_policy_name: external-secrets
+acm_policy_name: secret-store
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -24,3 +24,9 @@ secretstore:
   - name: vault
     namespace: openshift-storage
     role: demo
+  - name: vault
+    namespace: openshift-config
+    role: user
+  - name: vault
+    namespace: openshift-ingress
+    role: test
