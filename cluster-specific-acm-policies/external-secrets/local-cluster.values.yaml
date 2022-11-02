@@ -26,7 +26,7 @@ externalSecrets:
     namespace: openshift-storage
     refreshInterval: 
     secretStoreRefName: vault
-    tlsSecret: false
+    tlsTemplate: false
     secretData:
       - secretKey: arn
         remoteRefKey: openshift-storage/kms-key
@@ -35,7 +35,7 @@ externalSecrets:
 #    namespace: openshift-config
 #    refreshInterval: 15s
 #    secretStoreRefName: vault
-#    tlsSecret: false
+#    tlsTemplate: false
 #    secretData:
 #      - secretKey: ca.crt
 #        remoteRefKey: openshift-config/proxy-cert
@@ -43,7 +43,7 @@ externalSecrets:
 #    namespace: openshift-config
 #    refreshInterval: 15s
 #    secretStoreRefName: vault
-#    tlsSecret: true
+#    tlsTemplate: true
 #    secretData:
 #      - secretKey: tls.crt
 #        remoteRefKey: openshift-config/api-certs
@@ -53,7 +53,7 @@ externalSecrets:
 #    namespace: openshift-ingress
 #    refreshInterval: 15s
 #    secretStoreRefName: vault
-#    tlsSecret: true
+#    tlsTemplate: true
 #    secretData:
 #      - secretKey: tls.crt
 #        remoteRefKey:  openshift-ingress/ingress-certs
