@@ -22,8 +22,8 @@ spec:
                 apiVersion: v1
                 kind: Namespace
                 metadata:
-                  labels:
-                    argocd.argoproj.io/managed-by: openshift-gitops
+#                  labels:
+#                    argocd.argoproj.io/managed-by: openshift-gitops
                   name: stackrox
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
