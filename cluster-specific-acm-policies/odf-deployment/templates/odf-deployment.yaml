@@ -22,6 +22,8 @@ spec:
                 kind: Namespace
                 apiVersion: v1
                 metadata:
+                  labels:
+                    argocd.argoproj.io/managed-by: openshift-gitops
                   name: openshift-storage
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
