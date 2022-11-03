@@ -2,7 +2,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  name: {{ $.Values.acm_policy_name }}
   namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
   disabled: false
@@ -12,7 +12,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+          name: {{ $.Values.acm_policy_name }}
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "low" }}

@@ -1,0 +1,11 @@
+---
+acm_policy_set_name: hub-cluster-policy-set
+
+#
+# policy_namespce defaults to 'default' namespace
+#
+policy_set_namespace: hub-cluster-acm-policy
+
+hub_cluster:
+  acm_policies:
+    - rhacs-central

@@ -14,7 +14,6 @@ cluster:
   acm_policy:
     - secret-store
     - machine-sets
-    - rhacs-central
     - odf-deployment
     - external-secrets
     - gp3-encrypted-sc

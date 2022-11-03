@@ -1,0 +1,12 @@
+---
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: PolicySet
+metadata:
+  name: {{ $.Values.acm_policy_set_name }}
+  namespace: {{ $.Values.policy_set_namespace | default "default" }}
+spec:
+  description: "Set of ACM policies SOLELY applied to cluster 'local-cluster'"
+  policies:
+  {{- range .Values.hub_cluster.acm_policies }}
+    - {{.}}
+  {{- end -}}
