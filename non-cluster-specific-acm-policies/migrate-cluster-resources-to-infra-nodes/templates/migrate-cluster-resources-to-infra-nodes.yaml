@@ -27,16 +27,14 @@ spec:
                 spec:
                   nodePlacement:
                     nodeSelector:
-                      node-role.kubernetes.io/infra: ""
+                      {{ $.Values.node.selector }}
                     tolerations:
-                    - effect: NoSchedule
-                      key: node-role.kubernetes.io/infra
-                      operator: Equal
-                      value: "true"
-                    - effect: NoExecute
-                      key: node-role.kubernetes.io/infra
-                      operator: Equal
-                      value: "true"
+                    {{- range $k, $v := $.Values.node.tolerations }}
+                    - key: {{ $v.key }}
+                      effect: {{ $v.effect }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
+                    {{- end -}}
   {{- end }}
   {{- if eq $.Values.migrate_ingress_controller true }}
     - objectDefinition:
@@ -56,20 +54,18 @@ spec:
                   name: default
                   namespace: openshift-ingress-operator
                 spec:
+                  replicas: {{ $.Values.ingress_controller_replicas }}
                   nodePlacement:
                     nodeSelector:
                       matchLabels:
-                        node-role.kubernetes.io/infra: ""
+                        {{ $.Values.node.selector }}
                     tolerations:
-                    - effect: NoSchedule
-                      key: node-role.kubernetes.io/infra
-                      operator: Equal
-                      value: "true"
-                    - effect: NoExecute
-                      key: node-role.kubernetes.io/infra
-                      operator: Equal
-                      value: "true"
-                  replicas: {{ $.Values.ingress_controller_replicas }}
+                    {{- range $k, $v := $.Values.node.tolerations }}
+                    - key: {{ $v.key }}
+                      effect: {{ $v.effect }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
+                    {{- end -}}
   {{- end }}
   {{- if eq $.Values.migrate_image_registry true }}
     - objectDefinition:
@@ -88,18 +84,16 @@ spec:
                 metadata:
                   name: cluster
                 spec:
-                  nodeSelector:
-                    node-role.kubernetes.io/infra: ""
                   replicas: {{ $.Values.image_registry_replicas }}
+                  nodeSelector:
+                    {{ $.Values.node.selector }}
                   tolerations:
-                  - effect: NoSchedule
-                    key: node-role.kubernetes.io/infra
-                    operator: Equal
-                    value: "true"
-                  - effect: NoExecute
-                    key: node-role.kubernetes.io/infra
-                    operator: Equal
-                    value: "true"
+                  {{- range $k, $v := $.Values.node.tolerations }}
+                  - key: {{ $v.key }}
+                    effect: {{ $v.effect }}
+                    operator: {{ $v.operator }}
+                    value: {{ squote $v.value }}
+                  {{- end -}}
   {{- end }}
   {{- if eq $.Values.migrate_openshift_monitoring true }}
     - objectDefinition:
@@ -120,100 +114,17 @@ spec:
                   namespace: openshift-monitoring
                 data:
                   config.yaml: |+
-                    alertmanagerMain:
+                  {{- range $.Values.openshift_monitoring_stack }}
+                    {{ . }}:
                       nodeSelector:
-                        node-role.kubernetes.io/infra: ""
+                        {{ $.Values.node.selector }}
                       tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    prometheusK8s:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    prometheusOperator:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    grafana:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    k8sPrometheusAdapter:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    kubeStateMetrics:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    telemeterClient:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                    openshiftStateMetrics:
-                      nodeSelector:
-                        node-role.kubernetes.io/infra: ""
-                      tolerations:
-                      - effect: NoSchedule
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
-                      - effect: NoExecute
-                        key: node-role.kubernetes.io/infra
-                        operator: Equal
-                        value: "true"
+                      {{- range $k, $v := $.Values.node.tolerations }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
+                      {{- end -}}
+                  {{- end -}}
   {{- end -}}
+

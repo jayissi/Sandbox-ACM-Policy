@@ -29,3 +29,28 @@ migrate_openshift_monitoring: true
 #
 ingress_controller_replicas: 3
 image_registry_replicas: 3
+
+node:
+  selector: |-
+    node-role.kubernetes.io/cluster-infra: ''
+  tolerations:
+  - key: node-role.kubernetes.io/infra
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/infra
+    operator: Equal
+    value: "true"
+    effect: NoExecute
+
+openshift_monitoring_stack:
+  - alertmanagerMain
+  - prometheusK8s
+  - prometheusOperator
+  - grafana
+  - k8sPrometheusAdapter
+  - kubeStateMetrics
+  - telemeterClient
+  - thanosQuerier
+  - openshiftStateMetrics
+
