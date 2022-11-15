@@ -54,7 +54,7 @@ spec:
                   name: default
                   namespace: openshift-ingress-operator
                 spec:
-                  replicas: {{ $.Values.ingress_controller_replicas }}
+                  replicas: {{ $.Values.ingress_controller_replicas | default "3" | int }}
                   nodePlacement:
                     nodeSelector:
                       matchLabels:
@@ -84,7 +84,7 @@ spec:
                 metadata:
                   name: cluster
                 spec:
-                  replicas: {{ $.Values.image_registry_replicas }}
+                  replicas: {{ $.Values.image_registry_replicas | default "3" | int }}
                   nodeSelector:
                     {{ $.Values.node.selector }}
                   tolerations:
