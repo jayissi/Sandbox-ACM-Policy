@@ -31,16 +31,16 @@ spec:
                       {{ $.Values.node.selector }}
                     tolerations:
                     {{- range $k, $v := $.Values.node.tolerations }}
-                      - key: {{ $v.key }}
-                        effect: {{ $v.effect }}
-                        operator: {{ $v.operator }}
-                        value: {{ squote $v.value }}
+                    - key: {{ $v.key }}
+                      effect: {{ $v.effect }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
                     {{- end -}}
                   {{- end }}
                     exposure:
                       loadBalancer:
                         enabled: false
-                        port: {{ $.Values.central_port_number | default "443" }}
+                        port: {{ $.Values.central_port_number | default "443" | int }}
                       nodePort:
                         enabled: false
                       route:
@@ -57,10 +57,10 @@ spec:
                         {{ $.Values.node.selector }}
                       tolerations:
                       {{- range $k, $v := $.Values.node.tolerations }}
-                        - key: {{ $v.key }}
-                          effect: {{ $v.effect }}
-                          operator: {{ $v.operator }}
-                          value: {{ squote $v.value }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
                       {{- end -}}
                     {{- end }}
                       scaling:
@@ -74,10 +74,10 @@ spec:
                         {{ $.Values.node.selector }}
                       tolerations:
                       {{- range $k, $v := $.Values.node.tolerations }}
-                        - key: {{ $v.key }}
-                          effect: {{ $v.effect }}
-                          operator: {{ $v.operator }}
-                          value: {{ squote $v.value }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
                       {{- end -}}
                     {{- end }}
                     scannerComponent: Enabled

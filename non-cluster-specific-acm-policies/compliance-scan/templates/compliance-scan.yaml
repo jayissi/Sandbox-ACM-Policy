@@ -48,14 +48,14 @@ spec:
                 {{- end -}}
                 {{- if .tolerations }}
                   tolerations:
-                    {{- range $k, $v := .tolerations }}
-                    - key: {{ $v.key }}
-                      effect: {{ $v.effect }}
-                      operator: {{ $v.operator }}
-                      {{- if $v.value }}
-                      value: {{ squote $v.value }}
-                      {{- end -}}
+                  {{- range $k, $v := .tolerations }}
+                  - key: {{ $v.key }}
+                    effect: {{ $v.effect }}
+                    operator: {{ $v.operator }}
+                    {{- if $v.value }}
+                    value: {{ squote $v.value }}
                     {{- end -}}
+                  {{- end -}}
                 {{- end }}
                   pvAccessModes:
                     - ReadWriteOnce

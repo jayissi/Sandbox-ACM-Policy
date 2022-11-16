@@ -44,10 +44,10 @@ spec:
                       {{ $.Values.node.selector }}
                     tolerations:
                     {{- range $k, $v := $.Values.node.tolerations }}
-                      - key: {{ $v.key }}
-                        effect: {{ $v.effect }}
-                        operator: {{ $v.operator }}
-                        value: {{ squote $v.value }}
+                    - key: {{ $v.key }}
+                      effect: {{ $v.effect }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
                     {{- end -}}
                   {{- end }}
                     bypass: BreakGlassAnnotation
@@ -61,10 +61,10 @@ spec:
                       {{ $.Values.node.selector }}
                     tolerations:
                     {{- range $k, $v := $.Values.node.tolerations }}
-                      - key: {{ $v.key }}
-                        effect: {{ $v.effect }}
-                        operator: {{ $v.operator }}
-                        value: {{ squote $v.value }}
+                    - key: {{ $v.key }}
+                      effect: {{ $v.effect }}
+                      operator: {{ $v.operator }}
+                      value: {{ squote $v.value }}
                     {{- end -}}
                   {{- end }}
                   scanner:
@@ -74,10 +74,10 @@ spec:
                         {{ $.Values.node.selector }}
                       tolerations:
                       {{- range $k, $v := $.Values.node.tolerations }}
-                        - key: {{ $v.key }}
-                          effect: {{ $v.effect }}
-                          operator: {{ $v.operator }}
-                          value: {{ squote $v.value }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
                       {{- end -}}
                     {{- end }}
                       scaling:
@@ -91,10 +91,10 @@ spec:
                         {{ $.Values.node.selector }}
                       tolerations:
                       {{- range $k, $v := $.Values.node.tolerations }}
-                        - key: {{ $v.key }}
-                          effect: {{ $v.effect }}
-                          operator: {{ $v.operator }}
-                          value: {{ squote $v.value }}
+                      - key: {{ $v.key }}
+                        effect: {{ $v.effect }}
+                        operator: {{ $v.operator }}
+                        value: {{ squote $v.value }}
                       {{- end -}}
                     {{- end }}
                     scannerComponent: AutoSense
