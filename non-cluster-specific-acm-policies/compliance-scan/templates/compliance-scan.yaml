@@ -24,7 +24,7 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                {{- if eq .enable_scan_setting true }}
+              {{- if eq .enable_scan_setting true }}
                 apiVersion: compliance.openshift.io/v1alpha1
                 kind: ScanSetting
                 metadata:
@@ -42,6 +42,7 @@ spec:
                 {{- end }}
                 schedule: 0 1 * * *
                 rawResultStorage:
+                  storageClassName: gp2
                 {{- if .selector }}
                   nodeSelector:
                     {{ .selector }}
@@ -62,10 +63,19 @@ spec:
                   rotation: 3
                   size: 1Gi
                 roles:
-                  - {{ .type }}
+                - {{ .type }}
                 scanTolerations:
-                  - operator: Exists
+                {{- if .tolerations }}
+                {{- range $k, $v := .tolerations }}
+                - key: {{ $v.key }}
+                  effect: {{ $v.effect }}
+                  operator: {{ $v.operator }}
+                  {{- if $v.value }}
+                  value: {{ squote $v.value }}
+                  {{- end -}}
+                {{- end -}}
                 {{- end }}
+              {{- end }}
     {{- end }}
     {{- range $.Values.node }}
     - objectDefinition:
