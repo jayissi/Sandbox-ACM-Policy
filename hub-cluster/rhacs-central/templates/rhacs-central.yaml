@@ -48,6 +48,7 @@ spec:
                     persistence:
                       persistentVolumeClaim:
                         claimName: stackrox-db
+                        storageClassName: ocs-storagecluster-ceph-rbd
                   egress:
                     connectivityPolicy: Online
                   scanner:

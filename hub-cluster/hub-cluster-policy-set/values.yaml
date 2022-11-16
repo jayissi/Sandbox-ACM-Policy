@@ -9,3 +9,4 @@ policy_set_namespace: hub-cluster-acm-policy
 hub_cluster:
   acm_policies:
     - rhacs-central
+    - rhacs-init-bundle
