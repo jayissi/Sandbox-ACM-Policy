@@ -127,7 +127,7 @@ spec:
                 
                                 # Wait for central to be ready
                                 attempt_counter=0
-                                max_attempts=30
+                                max_attempts=20
                                 echo "Waiting for central to be available..."
                                 until $(curl -k --output /dev/null --silent --head --fail https://central); do
                                     if [ ${attempt_counter} -eq ${max_attempts} ];then
@@ -151,6 +151,11 @@ spec:
                                 echo "Applying bundle"
                                 # No jq in container, python to the rescue
                                 cat /tmp/bundle.json | python3 -c "import sys, json; print(json.load(sys.stdin)['kubectlBundle'])" | base64 -d | oc apply -f -
+
+                                echo "Deleting bundle"
+                                # Clean-up cause.... why not?!
+                                rm -f /tmp/bundle.json
+
                                 # Touch SecuredCluster to force operator to reconcile
                                 oc label SecuredCluster stackrox-secured-cluster-services cluster-init-job-status=created
                 
@@ -162,4 +167,4 @@ spec:
                       restartPolicy: OnFailure
                       serviceAccount: rhacs-init-bundle
                       serviceAccountName: rhacs-init-bundle
-                      terminationGracePeriodSeconds: 30
+                      terminationGracePeriodSeconds: 5
