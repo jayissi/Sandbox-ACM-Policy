@@ -48,7 +48,7 @@ spec:
                     persistence:
                       persistentVolumeClaim:
                         claimName: stackrox-db
-                        storageClassName: ocs-storagecluster-ceph-rbd
+                        storageClassName: {{ $.Values.central_storage_class_name | default "gp2" }}
                   egress:
                     connectivityPolicy: Online
                   scanner:

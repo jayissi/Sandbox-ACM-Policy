@@ -16,6 +16,7 @@ remediation_action: enforce
 #
 severity: high
 
+compliance_scan_storage_class_name: ocs-storagecluster-cephfs
 
 apply_auto_remediations: false
 

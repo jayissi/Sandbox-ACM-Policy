@@ -20,6 +20,7 @@ policy_namespace:
 cluster_name: hub-cluster
 default_namespace: acm-policy
 
+central_storage_class_name: ocs-storagecluster-ceph-rbd
 central_port_number: 443
 
 node:

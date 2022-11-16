@@ -42,7 +42,7 @@ spec:
                 {{- end }}
                 schedule: 0 1 * * *
                 rawResultStorage:
-                  storageClassName: gp2
+                  storageClassName: {{ $.Values.compliance_scan_storage_class_name | default "gp2" }}
                 {{- if .selector }}
                   nodeSelector:
                     {{ .selector }}
