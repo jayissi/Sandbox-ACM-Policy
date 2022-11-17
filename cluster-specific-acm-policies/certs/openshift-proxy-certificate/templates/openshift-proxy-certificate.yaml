@@ -23,7 +23,7 @@ spec:
                 data:
                   ca-bundle.crt: >
 
-                    {{ `{{ fromSecret "openshift-config" "proxy-certs" "ca.crt" | base64dec | trim | autoindent }}` }}
+                    {{ `{{ fromSecret "openshift-config" "proxy-cert" "ca.crt" | base64dec | trim | autoindent }}` }}
                 kind: ConfigMap
                 metadata:
                   name: {{ $.Values.ca_cert_configmap_name }}
