@@ -20,4 +20,7 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
+update_proxy_with_root_ca: false
+ca_cert_configmap_name: user-ca-bundle
+
 ingress_cert_secret_name: apps-certs

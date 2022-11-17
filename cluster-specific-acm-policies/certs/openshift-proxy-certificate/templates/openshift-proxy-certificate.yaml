@@ -21,8 +21,9 @@ spec:
               objectDefinition:
                 apiVersion: v1
                 data:
-                  ca-bundle.crt: |
-                    {{- .Files.Get .Values.tls.caPath | trim | nindent 20 }}
+                  ca-bundle.crt: >
+
+                    {{ `{{ fromSecret "openshift-config" "api-certs" "tls.crt" | base64dec | trim | autoindent }}` }}
                 kind: ConfigMap
                 metadata:
                   name: {{ $.Values.ca_cert_configmap_name }}
