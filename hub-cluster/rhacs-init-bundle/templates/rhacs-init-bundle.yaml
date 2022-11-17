@@ -105,6 +105,9 @@ spec:
                   name: create-cluster-init-bundle
                   namespace: stackrox
                 spec:
+                  completions: 1
+                  activeDeadlineSeconds: 600
+                  backoffLimit: 6
                   template:
                     spec:
                       containers:
