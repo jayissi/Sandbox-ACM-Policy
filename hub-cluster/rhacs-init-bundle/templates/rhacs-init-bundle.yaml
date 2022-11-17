@@ -148,7 +148,7 @@ spec:
                                 curl -k -o /tmp/bundle.json -X POST -u "admin:$PASSWORD" -H "Content-Type: application/json" --data $DATA https://central/v1/cluster-init/init-bundles
                 
                                 echo "Bundle received"
-                                cat /tmp/bundle.json
+                                #cat /tmp/bundle.json
                 
                                 echo "Applying bundle"
                                 # No jq in container, python to the rescue
