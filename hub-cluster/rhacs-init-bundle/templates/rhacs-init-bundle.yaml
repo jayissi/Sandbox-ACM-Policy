@@ -106,7 +106,6 @@ spec:
                   namespace: stackrox
                 spec:
                   completions: 1
-                  activeDeadlineSeconds: 600
                   backoffLimit: 6
                   template:
                     spec:
