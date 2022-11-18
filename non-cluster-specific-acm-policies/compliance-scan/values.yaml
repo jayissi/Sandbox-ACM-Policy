@@ -40,7 +40,7 @@ node:
       key: node.kubernetes.io/memory-pressure
       operator: Exists
     scan_profile:
-      - name: ocp4-cis-node
+    - name: ocp4-cis-node
 
   - type: infra
     name: basic-scan
@@ -57,8 +57,8 @@ node:
       value: "true"
       effect: NoExecute
     scan_profile:
-      - name: ocp4-cis
-      - name: ocp4-cis-node
+    - name: ocp4-cis
+    - name: ocp4-cis-node
 
   - type: odf
     name: basic-scan
@@ -80,7 +80,7 @@ node:
       operator: Exists
       effect: NoSchedule
     scan_profile:
-      - name: ocp4-cis-node
+    - name: ocp4-cis-node
 
   - type: app
     name: basic-scan
@@ -88,4 +88,4 @@ node:
     selector: |-
       node-role.kubernetes.io/app: ''
     scan_profile:
-      - name: ocp4-cis-node
+    - name: ocp4-cis-node
