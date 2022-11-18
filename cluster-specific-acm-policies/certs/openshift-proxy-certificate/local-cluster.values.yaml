@@ -1,7 +1,5 @@
 ---
 acm_policy_name: openshift-proxy-certificate
-cluster_name: local-cluster
-default_namespace: acm-policy
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -13,6 +11,14 @@ remediation_action: enforce
 #
 severity: high
 
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: local-cluster
+default_namespace: acm-policy
 
 http_proxy: http://proxy.sandbox.ocp.aws.example.redhat.com
 https_proxy: "{{ .Values.http_proxy }}"
