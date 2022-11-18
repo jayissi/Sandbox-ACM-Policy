@@ -8,7 +8,8 @@ spec:
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
-    {{- range $.Values.node }}
+  {{- range $.Values.node }}
+    {{- if eq .enable_scan_setting true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -24,7 +25,6 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-              {{- if eq .enable_scan_setting true }}
                 apiVersion: compliance.openshift.io/v1alpha1
                 kind: ScanSetting
                 metadata:
@@ -64,8 +64,8 @@ spec:
                   size: 1Gi
                 roles:
                 - {{ .type }}
+              {{- if .tolerations }}
                 scanTolerations:
-                {{- if .tolerations }}
                 {{- range $k, $v := .tolerations }}
                 - key: {{ $v.key }}
                   effect: {{ $v.effect }}
@@ -74,10 +74,11 @@ spec:
                   value: {{ squote $v.value }}
                   {{- end -}}
                 {{- end -}}
-                {{- end }}
               {{- end }}
     {{- end }}
-    {{- range $.Values.node }}
+  {{- end }}
+  {{- range $.Values.node }}
+    {{- if eq .enable_scan_setting true }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -93,7 +94,6 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                {{- if eq .enable_scan_setting true }}
                 kind: ScanSettingBinding
                 apiVersion: compliance.openshift.io/v1alpha1
                 metadata:
@@ -117,5 +117,5 @@ spec:
                 {{- else }}
                   name: {{ .type }}
                 {{- end }}
-                {{- end }}
     {{- end }}
+  {{- end }}
