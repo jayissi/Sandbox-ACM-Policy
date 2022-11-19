@@ -21,9 +21,8 @@ cluster_name: hub-cluster
 default_namespace: acm-policy
 
 custom_central_route_hostname:  # hostname default: "central", route default: "central.<openshift.apps.domain>"
-central_root_ca_name: null
 central_storage_class_name: ocs-storagecluster-ceph-rbd
-central_port_number: 443
+central_root_ca_name: null
 
 node:
   enableTolerations: true

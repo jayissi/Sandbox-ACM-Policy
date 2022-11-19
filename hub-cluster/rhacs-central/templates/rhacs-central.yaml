@@ -40,7 +40,7 @@ spec:
                     exposure:
                       loadBalancer:
                         enabled: false
-                        port: {{ $.Values.central_port_number | default "443" | int }}
+                        port: 443
                       nodePort:
                         enabled: false
                       route:
