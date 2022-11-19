@@ -46,7 +46,7 @@ spec:
                       route:
                         enabled: true
                         host: >-
-                          {{ print $.Values.central_route_hostname | default "central" }}.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
+                          {{ $.Values.custom_central_route_hostname | default "central" }}.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
                     persistence:
                       persistentVolumeClaim:
                         claimName: stackrox-db
