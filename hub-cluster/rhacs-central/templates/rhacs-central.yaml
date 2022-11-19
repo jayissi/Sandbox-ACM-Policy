@@ -82,3 +82,10 @@ spec:
                       {{- end -}}
                     {{- end }}
                     scannerComponent: Enabled
+                {{- if $.Values.central_root_ca_name }}
+                  tls:
+                    additionalCAs:
+                      - content: >-
+                          {{ `{{ fromSecret "openshift-config" "root-ca" "ca.pem" | base64dec | trim }}` }}
+                        name: {{ $.Values.central_root_ca_name }}
+                {{- end }}
