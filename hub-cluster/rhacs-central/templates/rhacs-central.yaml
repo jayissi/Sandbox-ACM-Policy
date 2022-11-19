@@ -85,7 +85,7 @@ spec:
                 {{- if $.Values.central_root_ca_name }}
                   tls:
                     additionalCAs:
-                      - content: >-
+                      - name: {{ $.Values.central_root_ca_name }}
+                        content: >-
                           {{ `{{ fromSecret "openshift-config" "root-ca" "ca.pem" | base64dec | trim }}` }}
-                        name: {{ $.Values.central_root_ca_name }}
                 {{- end -}}
