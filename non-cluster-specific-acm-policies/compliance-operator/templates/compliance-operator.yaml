@@ -29,6 +29,23 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
+          name: compliance-operator-sa
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "high" }}
+          object-templates:
+          {{- range .Values.serviceAccounts.accountNames }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ServiceAccount
+                metadata:
+                  name: {{ . }}
+          {{- end }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
           name: compliance-operator-group
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}

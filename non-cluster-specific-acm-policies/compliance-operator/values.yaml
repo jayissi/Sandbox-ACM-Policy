@@ -15,3 +15,13 @@ remediation_action: enforce
 # severity defaults to 'low' but, can be set to 'medium' or 'high'
 #
 severity: high
+
+serviceAccounts:
+  accountNames:
+    - compliance-operator
+    - resultscollector
+    - remediation-aggregator
+    - rerunner
+    - api-resource-collector
+    - profileparser
+    - resultserver
