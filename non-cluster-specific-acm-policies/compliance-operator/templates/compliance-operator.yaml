@@ -41,6 +41,7 @@ spec:
                 kind: ServiceAccount
                 metadata:
                   name: {{ . }}
+                  namespace: openshift-compliance
           {{- end }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
