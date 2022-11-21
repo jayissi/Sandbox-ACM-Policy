@@ -20,4 +20,4 @@ policy_namespace:
 cluster_name: hub-cluster
 default_namespace: acm-policy
 
-init_bundle_name: demo
+init_bundle_name: redhat-example-init-bundle
