@@ -1,4 +1,25 @@
 ---
-service_account_name: rhacs-init-bundle
-central_namespace: stackrox
+acm_policy_name: rhacs-init-bundle
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: enforce
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: hub-cluster
+default_namespace: acm-policy
+
+#service_account_name: rhacs-init-bundle
+#central_namespace: stackrox
 init_bundle_name: redhat-example-init-bundle

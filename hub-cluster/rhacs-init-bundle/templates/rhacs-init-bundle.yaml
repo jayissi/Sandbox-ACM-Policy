@@ -1,72 +1,169 @@
 ---
-apiVersion: batch/v1
-kind: Job
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
 metadata:
-  name: create-cluster-init-bundle
-  namespace: {{ $.Values.central_namespace | default "stackrox" }}
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
-  completions: 1
-  backoffLimit: 6
-  template:
-    spec:
-      containers:
-        - image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
-          env:
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: central-htpasswd
-                  key: password
-          command:
-            - /bin/bash
-            - -c
-            - |
-              #!/usr/bin/env bash
-              if kubectl get secret/sensor-tls &> /dev/null; then
-                echo "cluster-init bundle has already been configured, doing nothing"
-                exit 0
-              else
-
-                # Wait for central to be ready
-                attempt_counter=0
-                max_attempts=20
-                echo "Waiting for central to be available..."
-                until $(curl -k --output /dev/null --silent --head --fail https://central); do
-                    if [ ${attempt_counter} -eq ${max_attempts} ];then
-                      echo "Max attempts reached"
-                      exit 1
-                    fi
-
-                    printf '.'
-                    attempt_counter=$(($attempt_counter+1))
-                    echo "Made attempt $attempt_counter, waiting..."
-                    sleep 5
-                done
-
-                echo "Configuring cluster-init bundle"
-                export DATA={\"name\":\"{{ $.Values.init_bundle_name }}\"}
-                curl -k -o /tmp/bundle.json -X POST -u "admin:$PASSWORD" -H "Content-Type: application/json" --data $DATA https://central/v1/cluster-init/init-bundles
-
-                echo "Bundle received"
-                #cat /tmp/bundle.json
-
-                echo "Applying bundle"
-                # No jq in container, python to the rescue
-                cat /tmp/bundle.json | python3 -c "import sys, json; print(json.load(sys.stdin)['kubectlBundle'])" | base64 -d | oc apply -f -
-
-                echo "Deleting bundle"
-                # Clean-up cause.... why not?!
-                rm -f /tmp/bundle.json
-
-                # Touch SecuredCluster to force operator to reconcile
-                oc label SecuredCluster stackrox-secured-cluster-services cluster-init-job-status=created
-
-                echo "ACS Cluster init bundle generated and applied"
-              fi
-          imagePullPolicy: Always
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: service-account
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: ServiceAccount
+                metadata:
+                  name: rhacs-init-bundle
+                  namespace: stackrox
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: role
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: Role
+                metadata:
+                  annotations:
+                    argocd.argoproj.io/sync-wave: "1"
+                  name: rhacs-init-bundle
+                  namespace: stackrox
+                rules:
+                  - apiGroups:
+                      - ""
+                    resources:
+                      - secrets
+                    verbs:
+                      - get
+                      - list
+                      - create
+                      - patch
+                      - update
+                  - apiGroups:
+                      - platform.stackrox.io
+                    resources:
+                      - securedclusters
+                    verbs:
+                      - get
+                      - list
+                      - patch
+                      - update
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: rolebinding
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: RoleBinding
+                metadata:
+                  name: rhacs-init-bundle
+                  namespace: stackrox
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: Role
+                  name: rhacs-init-bundle
+                subjects:
+                  - kind: ServiceAccount
+                    name: rhacs-init-bundle
+                    namespace: stackrox
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
           name: create-cluster-init-bundle
-      dnsPolicy: ClusterFirst
-      restartPolicy: OnFailure
-      serviceAccount: {{ $.Values.service_account_name }}
-      serviceAccountName: {{ $.Values.service_account_name }}
-      terminationGracePeriodSeconds: 5
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: batch/v1
+                kind: Job
+                metadata:
+                  annotations:
+                    argocd.argoproj.io/hook: PostSync 
+                  name: create-cluster-init-bundle
+                  namespace: stackrox
+                spec:
+                  completions: 1
+                  backoffLimit: 6
+                  template:
+                    spec:
+                      containers:
+                        - image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+                          env:
+                            - name: PASSWORD
+                              valueFrom:
+                                secretKeyRef:
+                                  name: central-htpasswd
+                                  key: password
+                          command:
+                            - /bin/bash
+                            - -c
+                            - |
+                              #!/usr/bin/env bash
+                              if kubectl get secret/sensor-tls &> /dev/null; then
+                                echo "cluster-init bundle has already been configured, doing nothing"
+                                exit 0
+                              else
+                
+                                # Wait for central to be ready
+                                attempt_counter=0
+                                max_attempts=20
+                                echo "Waiting for central to be available..."
+                                until $(curl -k --output /dev/null --silent --head --fail https://central); do
+                                    if [ ${attempt_counter} -eq ${max_attempts} ];then
+                                      echo "Max attempts reached"
+                                      exit 1
+                                    fi
+
+                                    printf '.'
+                                    attempt_counter=$(($attempt_counter+1))
+                                    echo "Made attempt $attempt_counter, waiting..."
+                                    sleep 5
+                                done
+
+                                echo "Configuring cluster-init bundle"
+                                export DATA={\"name\":\"{{ $.Values.init_bundle_name }}\"}
+                                curl -k -o /tmp/bundle.json -X POST -u "admin:$PASSWORD" -H "Content-Type: application/json" --data $DATA https://central/v1/cluster-init/init-bundles
+
+                                echo "Bundle received"
+                                #cat /tmp/bundle.json
+                                
+                                echo "Deleting received"
+                                rm -f /tmp/bundle.json
+
+                                echo "Applying bundle"
+                                # No jq in container, python to the rescue
+                                cat /tmp/bundle.json | python3 -c "import sys, json; print(json.load(sys.stdin)['kubectlBundle'])" | base64 -d | oc apply -f -
+                                # Touch SecuredCluster to force operator to reconcile
+                                oc label SecuredCluster stackrox-secured-cluster-services cluster-init-job-status=created
+
+                                echo "ACS Cluster init bundle generated and applied"
+                              fi
+                          imagePullPolicy: Always
+                          name: create-cluster-init-bundle
+                      dnsPolicy: ClusterFirst
+                      restartPolicy: OnFailure
+                      serviceAccount: rhacs-init-bundle
+                      serviceAccountName: rhacs-init-bundle
