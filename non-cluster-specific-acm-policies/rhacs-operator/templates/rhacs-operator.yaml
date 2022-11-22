@@ -2,8 +2,6 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  annotations:
-    argocd.argoproj.io/hook: PreSync
   name: {{ $.Values.acm_policy_name }}
   namespace: {{ $.Values.policy_namespace | default "default" }}
 spec:
