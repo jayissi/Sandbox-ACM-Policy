@@ -154,8 +154,8 @@ spec:
                                 # No jq in container, python to the rescue
                                 cat /tmp/bundle.json | python3 -c "import sys, json; print(json.load(sys.stdin)['kubectlBundle'])" | base64 -d | oc apply -f -
 
-                                echo "Deleting received"
-                                rm -f /tmp/bundle.json
+                                echo "Deleting bundle"
+                                rm /tmp/bundle.json
 
                                 # Touch SecuredCluster to force operator to reconcile
                                 oc label SecuredCluster stackrox-secured-cluster-services cluster-init-job-status=created
