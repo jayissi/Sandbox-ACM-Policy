@@ -20,6 +20,4 @@ policy_namespace:
 cluster_name: hub-cluster
 default_namespace: acm-policy
 
-#service_account_name: rhacs-init-bundle
-#central_namespace: stackrox
 init_bundle_name: redhat-example-init-bundle
