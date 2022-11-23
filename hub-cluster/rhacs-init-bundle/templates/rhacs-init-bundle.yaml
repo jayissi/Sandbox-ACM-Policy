@@ -129,7 +129,7 @@ spec:
                           | python3 -c \"import sys, json; print(json.load(sys.stdin)['kubectlBundle'])\"
                           | base64 -d | oc apply -f -\n\n  echo \"Deleting received\"\n  rm /tmp/bundle.json\n\n
                           \ # Touch SecuredCluster to force operator to reconcile\n  oc label SecuredCluster
-                          $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers) \ 
+                          $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers)
                           cluster-init-job-status=created\n\n  echo
                           \"ACS Cluster init bundle generated and applied\"\nfi\n"
                         env:
@@ -142,7 +142,7 @@ spec:
                         imagePullPolicy: Always
                         name: create-cluster-init-bundle
                       dnsPolicy: ClusterFirst
-                      restartPolicy: OnFailure
+                      restartPolicy: Always
                       serviceAccount: rhacs-init-bundle
                       serviceAccountName: rhacs-init-bundle
                       terminationGracePeriodSeconds: 30
