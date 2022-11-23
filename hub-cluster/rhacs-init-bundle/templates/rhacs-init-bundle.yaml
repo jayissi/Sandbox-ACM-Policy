@@ -105,7 +105,6 @@ spec:
                 spec:
                   backoffLimit: 6
                   completions: 1
-                  parallelism: 1
                   template:
                     metadata:
                     spec:
@@ -142,7 +141,7 @@ spec:
                         imagePullPolicy: Always
                         name: create-cluster-init-bundle
                       dnsPolicy: ClusterFirst
-                      restartPolicy: Always
+                      restartPolicy: OnFailure
                       serviceAccount: rhacs-init-bundle
                       serviceAccountName: rhacs-init-bundle
                       terminationGracePeriodSeconds: 30
