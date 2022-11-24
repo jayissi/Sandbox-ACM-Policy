@@ -73,30 +73,6 @@ spec:
           object-templates:
             - complianceType: musthave
               objectDefinition:
-                apiVersion: rbac.authorization.k8s.io/v1
-                kind: RoleBinding
-                metadata:
-                  name: rhacs-init-bundle
-                  namespace: stackrox
-                roleRef:
-                  apiGroup: rbac.authorization.k8s.io
-                  kind: Role
-                  name: rhacs-init-bundle
-                subjects:
-                  - kind: ServiceAccount
-                    name: rhacs-init-bundle
-                    namespace: stackrox
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: create-cluster-init-bundle
-        spec:
-          remediationAction: {{ $.Values.remediation_action | default "inform" }}
-          severity: {{ $.Values.severity | default "low" }}
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
                 apiVersion: batch/v1
                 kind: Job
                 metadata:
@@ -107,42 +83,65 @@ spec:
                   completions: 1
                   backoffLimit: 6
                   template:
-                    metadata:
                     spec:
                       containers:
-                      - command:
-                        - /bin/bash
-                        - -c
-                        - "#!/usr/bin/env bash\nif kubectl get secret/sensor-tls &> /dev/null; then\n
-                          \ echo \"cluster-init bundle has already been configured, doing nothing\"\n
-                          \ exit 0\nelse\n\n  # Wait for central to be ready\n  attempt_counter=0\n
-                          \ max_attempts=20\n  echo \"Waiting for central to be available...\"\n  until
-                          $(curl -k --output /dev/null --silent --head --fail https://central); do\n
-                          \     if [ ${attempt_counter} -eq ${max_attempts} ];then\n        echo \"Max
-                          attempts reached\"\n        exit 1\n      fi\n\n      printf '.'\n      attempt_counter=$(($attempt_counter+1))\n
-                          \     echo \"Made attempt $attempt_counter, waiting...\"\n      sleep 5\n
-                          \ done\n\n  echo \"Configuring cluster-init bundle\"\n  export DATA={\\\"name\\\":\\\"{{ $.Values.init_bundle_name }}\\\"}\n
-                          \ curl -k -o /tmp/bundle.json -X POST -u \"admin:$PASSWORD\" -H \"Content-Type:
-                          application/json\" --data $DATA https://central/v1/cluster-init/init-bundles\n\n
-                          \ echo \"Bundle received\"\n  #cat /tmp/bundle.json\n  \n  echo \"Applying
-                          bundle\"\n  # No jq in container, python to the rescue\n  cat /tmp/bundle.json
-                          | python3 -c \"import sys, json; print(json.load(sys.stdin)['kubectlBundle'])\"
-                          | base64 -d | oc apply -f -\n\n  echo \"Deleting received\"\n  rm /tmp/bundle.json\n\n
-                          \ # Touch SecuredCluster to force operator to reconcile\n  oc label SecuredCluster
-                          $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers)
-                          cluster-init-job-status=created\n\n  echo
-                          \"ACS Cluster init bundle generated and applied\"\nfi\n"
-                        env:
-                        - name: PASSWORD
-                          valueFrom:
-                            secretKeyRef:
-                              key: password
-                              name: central-htpasswd
-                        image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
-                        imagePullPolicy: Always
-                        name: create-cluster-init-bundle
-                      dnsPolicy: ClusterFirst
+                        - name: create-cluster-init-bundle
+                          image: >-
+                            image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+                          command:
+                            - /bin/bash
+                            - '-c'
+                            - |
+                              #!/usr/bin/env bash
+                              if kubectl get secret/sensor-tls &> /dev/null; then
+                                echo "cluster-init bundle has already been configured, doing nothing"
+                                exit 0
+                              else
+                
+                                # Wait for central to be ready
+                                attempt_counter=0
+                                max_attempts=20
+                                echo "Waiting for central to be available..."
+                                until $(curl -k --output /dev/null --silent --head --fail https://central); do
+                                    if [ ${attempt_counter} -eq ${max_attempts} ];then
+                                      echo "Max attempts reached"
+                                      exit 1
+                                    fi
+                
+                                    printf '.'
+                                    attempt_counter=$(($attempt_counter+1))
+                                    echo "Made attempt $attempt_counter, waiting..."
+                                    sleep 5
+                                done
+                
+                                echo "Configuring cluster-init bundle"
+                                export DATA={\"name\":\"{{ $.Values.init_bundle_name }}\"}
+                                curl -k -o /tmp/bundle.json -X POST -u "admin:$PASSWORD" -H "Content-Type: application/json" --data $DATA https://central/v1/cluster-init/init-bundles
+                
+                                echo "Bundle received"
+                                #cat /tmp/bundle.json
+                                
+                                echo "Applying bundle"
+                                # No jq in container, python to the rescue
+                                cat /tmp/bundle.json | python3 -c "import sys, json; print(json.load(sys.stdin)['kubectlBundle'])" | base64 -d | oc apply -f -
+                
+                                echo "Deleting received"
+                                rm /tmp/bundle.json
+                
+                                # Touch SecuredCluster to force operator to reconcile
+                                oc label SecuredCluster $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers) cluster-init-job-status=created
+                
+                                echo "ACS Cluster init bundle generated and applied"
+                              fi
+                          env:
+                            - name: PASSWORD
+                              valueFrom:
+                                secretKeyRef:
+                                  name: central-htpasswd
+                                  key: password
+                          imagePullPolicy: Always
                       restartPolicy: OnFailure
-                      serviceAccount: rhacs-init-bundle
-                      serviceAccountName: rhacs-init-bundle
                       terminationGracePeriodSeconds: 30
+                      dnsPolicy: ClusterFirst
+                      serviceAccountName: rhacs-init-bundle
+                      serviceAccount: rhacs-init-bundle
