@@ -22,15 +22,19 @@ spec:
               objectDefinition:
                 apiVersion: machineconfiguration.openshift.io/v1
                 kind: MachineConfigPool
+                metadata:
               {{- if eq .type "app" }}
-                metadata:
                   name: app
+                  labels: 
+                    pools.operator.machineconfiguration.openshift.io/app: ""
               {{- else if eq .type "odf" }}
-                metadata:
                   name: odf
+                  labels: 
+                    pools.operator.machineconfiguration.openshift.io/odf: ""
               {{- else if eq .type "infra" }}
-                metadata:
                   name: infra
+                  labels: 
+                    pools.operator.machineconfiguration.openshift.io/infra: ""
                {{- end }}
                 spec:
                   machineConfigSelector:
