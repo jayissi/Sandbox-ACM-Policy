@@ -1,3 +1,8 @@
+#
+# Orininal batch job for creating RHACS cluster init-bundle
+# Not sure why this version fail 'ImagePullBackOff' and the other doesn't
+#
+
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -59,7 +64,7 @@ spec:
                 rm /tmp/bundle.json
 
                 # Touch SecuredCluster to force operator to reconcile
-                oc label SecuredCluster stackrox-secured-cluster-services cluster-init-job-status=created
+                oc label SecuredCluster $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers) cluster-init-job-status=created
 
                 echo "ACS Cluster init bundle generated and applied"
               fi
