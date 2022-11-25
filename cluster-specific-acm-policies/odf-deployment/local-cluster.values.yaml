@@ -20,8 +20,6 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-openshift_version: "4.10"
-
 #
 # ocs_size value can only be 'small' (512Gi), 'standard' (2Ti), or 'large' (4Ti).
 #

@@ -63,7 +63,8 @@ spec:
                   name: odf-operator
                   namespace: openshift-storage
                 spec:
-                  channel: stable-{{ $.Values.openshift_version }}
+                  channel: >-
+                    {{ `{{ (lookup "config.openshift.io/v1" "ClusterVersion" "" "version").spec.channel }}` }}
                   installPlanApproval: Automatic
                   name: odf-operator
                   source: redhat-operators
