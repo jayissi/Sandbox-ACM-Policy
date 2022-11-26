@@ -26,7 +26,7 @@ spec:
                   namespace: openshift-ingress-operator
                 spec:
                   tlsSecurityProfile:
-                    type: Intermediate
+                    {{- $.Values.custom_security_profile | nindent 20 }}
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -44,5 +44,27 @@ spec:
                   name: cluster
                 spec:
                   tlsSecurityProfile:
-                    intermediate: {}
-                    type: Intermediate
+                    {{- $.Values.custom_security_profile | nindent 20 }}
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: kubelet-config-tls-security-policy
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+          {{- range $machine := $.Values.machines }}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: machineconfiguration.openshift.io/v1
+                kind: KubeletConfig
+                metadata:
+                  name: set-{{ $machine }}-nodes-kubelet-tls-security-profile
+                spec:
+                  tlsSecurityProfile:
+                    {{- $.Values.custom_security_profile | nindent 20 }}
+                  machineConfigPoolSelector:
+                    matchLabels:
+                      pools.operator.machineconfiguration.openshift.io/{{ $machine }}: ""
+          {{- end }}
