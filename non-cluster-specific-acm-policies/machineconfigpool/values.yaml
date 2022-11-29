@@ -20,6 +20,6 @@ severity: high
 # machines.type[] is restricted only to 'app', 'odf', and 'infra'
 #
 machines:
-  - type: app
-  - type: odf
-  - type: infra
+  - app
+  - odf
+  - infra

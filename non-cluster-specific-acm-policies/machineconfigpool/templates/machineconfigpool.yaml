@@ -23,52 +23,22 @@ spec:
                 apiVersion: machineconfiguration.openshift.io/v1
                 kind: MachineConfigPool
                 metadata:
-              {{- if eq .type "app" }}
-                  name: app
+                  name: {{ . }}
                   labels: 
-                    pools.operator.machineconfiguration.openshift.io/app: ""
-              {{- else if eq .type "odf" }}
-                  name: odf
-                  labels: 
-                    pools.operator.machineconfiguration.openshift.io/odf: ""
-              {{- else if eq .type "infra" }}
-                  name: infra
-                  labels: 
-                    pools.operator.machineconfiguration.openshift.io/infra: ""
-               {{- end }}
+                    pools.operator.machineconfiguration.openshift.io/{{ . }}: ""
                 spec:
                   machineConfigSelector:
-                  {{- if eq .type "app" }}
                     matchExpressions:
                       - key: machineconfiguration.openshift.io/role
                         operator: In
                         values: 
                         - worker
-                        - app
-                  {{- else if eq .type "odf" }}
-                    matchExpressions:
-                      - key: machineconfiguration.openshift.io/role
-                        operator: In
-                        values:
-                        - worker
-                        - odf
-                  {{- else if eq .type "infra" }}
-                    matchExpressions:
-                      - key: machineconfiguration.openshift.io/role
-                        operator: In
-                        values: 
-                        - worker
-                        - infra
-                  {{- end }}
+                        - {{ . }}
                   nodeSelector:
-                  {{- if eq .type "app" }}
                     matchLabels:
-                      node-role.kubernetes.io/app: ""
-                  {{- else if eq .type "odf" }}
-                    matchLabels:
-                      node-role.kubernetes.io/odf: ""
-                  {{- else if eq .type "infra" }}
-                    matchLabels:
-                      node-role.kubernetes.io/cluster-infra: ""
+                  {{- if eq . "infra" }}
+                      node-role.kubernetes.io/cluster-{{ . }}: ""
+                  {{- else }}
+                      node-role.kubernetes.io/{{ . }}: ""
                   {{- end -}}
            {{- end -}}
