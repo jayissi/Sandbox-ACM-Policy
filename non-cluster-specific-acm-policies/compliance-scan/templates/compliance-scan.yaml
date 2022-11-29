@@ -15,9 +15,9 @@ spec:
         kind: ConfigurationPolicy
         metadata:
         {{- if .name }}
-          name: {{ .type }}-{{ .name }}-scansetting
+          name: {{ .role }}-{{ .name }}-scansetting
         {{- else }}
-          name: {{ .type }}-scansetting
+          name: {{ .role }}-scansetting
         {{- end }}
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
@@ -29,9 +29,9 @@ spec:
                 kind: ScanSetting
                 metadata:
                 {{- if .name }}
-                  name: {{ .type }}-{{ .name }}
+                  name: {{ .role }}-{{ .name }}
                 {{- else }}
-                  name: {{ .type }}
+                  name: {{ .role }}
                 {{- end }}
                   namespace: openshift-compliance
                 strictNodeScan: true
@@ -63,7 +63,7 @@ spec:
                   rotation: 3
                   size: 1Gi
                 roles:
-                - {{ .type }}
+                - {{ .role }}
               {{- if .tolerations }}
                 scanTolerations:
                 {{- range $k, $v := .tolerations }}
@@ -84,9 +84,9 @@ spec:
         kind: ConfigurationPolicy
         metadata:
         {{- if .name }}
-          name: {{ .type }}-{{ .name }}-scansettingbindings
+          name: {{ .role }}-{{ .name }}-scansettingbindings
         {{- else }}
-          name: {{ .type }}-scansettingbindings
+          name: {{ .role }}-scansettingbindings
         {{- end }}
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
@@ -98,9 +98,9 @@ spec:
                 apiVersion: compliance.openshift.io/v1alpha1
                 metadata:
                 {{- if .name }}
-                  name: {{ .type }}-{{ .name }}
+                  name: {{ .role }}-{{ .name }}
                 {{- else }}
-                  name: {{ .type }}
+                  name: {{ .role }}
                 {{- end }}
                   namespace: openshift-compliance
                 profiles:
@@ -113,9 +113,9 @@ spec:
                   apiGroup: compliance.openshift.io/v1alpha1
                   kind: ScanSetting
                 {{- if .name }}
-                  name: {{ .type }}-{{ .name }}
+                  name: {{ .role }}-{{ .name }}
                 {{- else }}
-                  name: {{ .type }}
+                  name: {{ .role }}
                 {{- end }}
     {{- end }}
   {{- end }}

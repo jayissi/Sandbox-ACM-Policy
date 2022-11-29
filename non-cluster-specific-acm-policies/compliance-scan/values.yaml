@@ -18,10 +18,10 @@ severity: high
 
 compliance_scan_storage_class_name: ocs-storagecluster-cephfs
 
-apply_auto_remediations: false
+apply_auto_remediations: true
 
 node:
-  - type: master
+  - role: master
     name: basic-scan
     enable_scan_setting: true
     selector: |-
@@ -42,7 +42,7 @@ node:
     scan_profile:
     - name: ocp4-cis-node
 
-  - type: cluster-infra
+  - role: cluster-infra
     name: basic-scan
     enable_scan_setting: true
     selector: |-
@@ -60,7 +60,7 @@ node:
     - name: ocp4-cis
     - name: ocp4-cis-node
 
-  - type: odf
+  - role: odf
     name: basic-scan
     enable_scan_setting: true
     selector: |-
@@ -82,7 +82,7 @@ node:
     scan_profile:
     - name: ocp4-cis-node
 
-  - type: app
+  - role: app
     name: basic-scan
     enable_scan_setting: true
     selector: |-
