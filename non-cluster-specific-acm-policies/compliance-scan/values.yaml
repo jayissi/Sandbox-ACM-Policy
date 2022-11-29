@@ -42,7 +42,7 @@ node:
     scan_profile:
     - name: ocp4-cis-node
 
-  - type: infra
+  - type: cluster-infra
     name: basic-scan
     enable_scan_setting: true
     selector: |-
