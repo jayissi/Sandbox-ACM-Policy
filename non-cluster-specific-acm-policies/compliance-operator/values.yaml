@@ -16,12 +16,11 @@ remediation_action: enforce
 #
 severity: high
 
-serviceAccounts:
-  accountNames:
-    - compliance-operator
-    - resultscollector
-    - remediation-aggregator
-    - rerunner
-    - api-resource-collector
-    - profileparser
-    - resultserver
+service_account_names:
+  - compliance-operator
+  - resultscollector
+  - remediation-aggregator
+  - rerunner
+  - api-resource-collector
+  - profileparser
+  - resultserver

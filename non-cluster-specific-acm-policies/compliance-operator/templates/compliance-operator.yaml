@@ -93,7 +93,7 @@ spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "high" }}
           object-templates:
-          {{- range .Values.serviceAccounts.accountNames }}
+          {{- range .Values.service_account_names }}
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
