@@ -17,5 +17,5 @@ severity: high
 #
 policy_namespace:
 #
-cluster_name: local-cluster
+cluster_name: hub-cluster
 default_namespace: acm-policy
