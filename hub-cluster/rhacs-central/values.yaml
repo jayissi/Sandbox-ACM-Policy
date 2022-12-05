@@ -20,6 +20,7 @@ policy_namespace:
 cluster_name: hub-cluster
 default_namespace: acm-policy
 
+default_tls_secret: null
 custom_central_route_hostname:  # hostname default: "central", route default: "central.<openshift.apps.domain>"
 central_storage_class_name: ocs-storagecluster-ceph-rbd
 central_root_ca_name: null

@@ -37,6 +37,10 @@ spec:
                       value: {{ squote $v.value }}
                     {{- end -}}
                   {{- end }}
+                  {{- if $.Values.default_tls_secret }}
+                    defaultTLSSecret:
+                      name: {{ $.Values.default_tls_secret }}
+                  {{- end }}
                     exposure:
                       loadBalancer:
                         enabled: false
