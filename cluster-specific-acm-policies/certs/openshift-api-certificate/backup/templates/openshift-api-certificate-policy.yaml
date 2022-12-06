@@ -3,7 +3,7 @@ apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
   name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
-  namespace: {{ $.Values.cluster_name }}-{{ $.Values.default_namespace }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
@@ -12,7 +12,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: create-custom-ca-bundle-config-map
+          name: api-cert-secret
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "low" }}
@@ -20,19 +20,19 @@ spec:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: v1
+                kind: Secret
                 data:
-                  ca-bundle.crt: >
-
-                    {{ `{{ fromSecret "openshift-config" "proxy-cert" "ca.crt" | base64dec | trim | autoindent }}` }}
-                kind: ConfigMap
+                  tls.crt: {{ .Files.Get .Values.tls.certPath | b64enc }}
+                  tls.key: {{ .Files.Get .Values.tls.keyPath | b64enc }}
                 metadata:
-                  name: {{ $.Values.ca_cert_configmap_name }}
+                  name: {{ $.Values.api_cert_secret_name }}
                   namespace: openshift-config
+                type: kubernetes.io/tls
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: update-cluster-wide-proxy-config
+          name: update-api-server-config-with-new-cert
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
           severity: {{ $.Values.severity | default "low" }}
@@ -40,16 +40,13 @@ spec:
             - complianceType: musthave
               objectDefinition:
                 apiVersion: config.openshift.io/v1
-                kind: Proxy
+                kind: APIServer
                 metadata:
                   name: cluster
-                  spec:
-                  {{- if $.Values.http_proxy }}
-                    httpProxy: {{ $.Values.http_proxy }}
-                    httpsProxy: {{ tpl .Values.https_proxy . }}
-                  {{- end }}
-                  {{- if $.Values.no_proxy_domain }}
-                    noProxy: {{ $.Values.no_proxy_domain }}
-                  {{- end }}
-                    trustedCA:
-                      name: {{ $.Values.ca_cert_configmap_name }}
+                spec:
+                  servingCerts:
+                    namedCertificates:
+                      - names:
+                        - {{ $.Values.openshift_cluster_api_domain }}
+                        servingCertificate:
+                          name: {{ $.Values.api_cert_secret_name }}

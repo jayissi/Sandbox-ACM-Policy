@@ -20,4 +20,8 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-ingress_cert_secret_name: apps-certs
+ingress_cert_secret_name: apps-cert-secret
+
+tls:
+  certPath: tls/tls.crt
+  keyPath: tls/tls.key

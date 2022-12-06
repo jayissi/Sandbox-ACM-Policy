@@ -1,5 +1,5 @@
 ---
-acm_policy_name: openshift-ingress-certificate
+acm_policy_name: openshift-proxy-certificate
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -20,4 +20,10 @@ policy_namespace:
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-ingress_cert_secret_name: apps-certs
+http_proxy: http://proxy.sandbox.ocp.aws.example.redhat.com
+https_proxy: "{{ .Values.http_proxy }}"
+no_proxy_domain: .sandbox.ocp.aws.example.redhat.com,sandbox.ocp.aws.example.redhat.com
+ca_cert_configmap_name: user-ca-bundle
+
+tls:
+  caPath: tls/ca.crt

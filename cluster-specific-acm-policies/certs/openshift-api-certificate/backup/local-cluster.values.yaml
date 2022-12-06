@@ -1,5 +1,5 @@
 ---
-acm_policy_name: openshift-ingress-certificate
+acm_policy_name: openshift-api-certificate
 
 #
 # remediation_action defaults to 'inform' but, can be set to 'enforce'
@@ -13,11 +13,16 @@ severity: high
 
 #
 # specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
-# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+# If policy_namespace value is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
 #
 policy_namespace:
 #
 cluster_name: local-cluster
 default_namespace: acm-policy
 
-ingress_cert_secret_name: apps-certs
+api_cert_secret_name: api-cert-secret
+openshift_cluster_api_domain: api.sandbox.ocp.aws.example.redhat.com
+
+tls:
+  certPath: tls/tls.crt
+  keyPath: tls/tls.key
