@@ -24,12 +24,11 @@ default_namespace: acm-policy
 externalSecrets:
   - name: kms-key
     namespace: openshift-storage
-    refreshInterval: 
+    refreshInterval: 15s
     secretStoreRefName: vault
     tlsTemplate: false
     secretData:
       - secretKey: arn
-        remoteRefKey: openshift-storage/kms-key
 
 #  - name: proxy-cert
 #    namespace: openshift-config
@@ -38,7 +37,6 @@ externalSecrets:
 #    tlsTemplate: false
 #    secretData:
 #      - secretKey: ca.crt
-#        remoteRefKey: openshift-config/proxy-cert
 #  - name: api-certs
 #    namespace: openshift-config
 #    refreshInterval: 15s
@@ -46,9 +44,7 @@ externalSecrets:
 #    tlsTemplate: true
 #    secretData:
 #      - secretKey: tls.crt
-#        remoteRefKey: openshift-config/api-certs
 #      - secretKey: tls.key
-#        remoteRefKey: openshift-config/api-certs
 #  - name: ingress-certs
 #    namespace: openshift-ingress
 #    refreshInterval: 15s
@@ -56,6 +52,4 @@ externalSecrets:
 #    tlsTemplate: true
 #    secretData:
 #      - secretKey: tls.crt
-#        remoteRefKey:  openshift-ingress/ingress-certs
 #      - secretKey: tls.key
-#        remoteRefKey:  openshift-ingress/ingress-certs
