@@ -37,10 +37,6 @@ spec:
                       value: {{ squote $v.value }}
                     {{- end -}}
                   {{- end }}
-                  {{- if $.Values.default_tls_secret }}
-                    defaultTLSSecret:
-                      name: {{ $.Values.default_tls_secret }}
-                  {{- end }}
                     exposure:
                       loadBalancer:
                         enabled: false
@@ -51,6 +47,10 @@ spec:
                         enabled: true
                         host: >-
                           {{ $.Values.custom_central_route_hostname | default "central" }}.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
+                  {{- if $.Values.default_tls_secret }}
+                    defaultTLSSecret:
+                      name: {{ $.Values.default_tls_secret }}
+                  {{- end }}
                     persistence:
                       persistentVolumeClaim:
                         claimName: stackrox-db
