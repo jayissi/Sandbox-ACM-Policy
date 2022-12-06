@@ -120,12 +120,12 @@ spec:
                           attempts reached\"\n        exit 1\n      fi\n\n      printf '.'\n      attempt_counter=$(($attempt_counter+1))\n
                           \     echo \"Made attempt $attempt_counter, waiting...\"\n      sleep 5\n
                           \ done\n\n  echo \"Configuring cluster-init bundle\"\n  export DATA={\\\"name\\\":\\\"{{ $.Values.init_bundle_name }}\\\"}\n
-                          \ curl -k -o /tmp/bundle.json -X POST -u \"admin:$PASSWORD\" -H \"Content-Type:
+                          \ curl -s -k -o /tmp/bundle.json -X POST -u \"admin:$PASSWORD\" -H \"Content-Type:
                           application/json\" --data $DATA https://central/v1/cluster-init/init-bundles\n\n
                           \ echo \"Bundle received\"\n  #cat /tmp/bundle.json\n  \n  echo \"Applying
                           bundle\"\n  # No jq in container, python to the rescue\n  cat /tmp/bundle.json
                           | python3 -c \"import sys, json; print(json.load(sys.stdin)['kubectlBundle'])\"
-                          | base64 -d | oc apply -f -\n\n  echo \"Deleting received\"\n  rm /tmp/bundle.json\n\n
+                          | base64 -d | oc apply -f -\n\n  echo \"Deleting bundle\"\n  rm -f /tmp/bundle.json\n\n
                           \ # Touch SecuredCluster to force operator to reconcile\n  oc label SecuredCluster
                           $(oc get securedcluster -o custom-columns=NAME:.metadata.name --no-headers)
                           cluster-init-job-status=created\n\n  echo
