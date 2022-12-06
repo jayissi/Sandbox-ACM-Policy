@@ -106,6 +106,55 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
+          name: restricted-adjusted-compliance-scc
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "high" }}
+          object-templates:
+            - complianceType: mustonlyhave
+              objectDefinition:
+                allowHostDirVolumePlugin: false
+                allowHostIPC: false
+                allowHostNetwork: false
+                allowHostPID: false
+                allowHostPorts: false
+                allowPrivilegeEscalation: true
+                allowPrivilegedContainer: false
+                allowedCapabilities: null
+                apiVersion: security.openshift.io/v1
+                defaultAddCapabilities: null
+                fsGroup:
+                  type: MustRunAs
+                groups: []
+                kind: SecurityContextConstraints
+                metadata:
+                  name: restricted-adjusted-compliance
+                priority: 30 
+                readOnlyRootFilesystem: false
+                requiredDropCapabilities:
+                - KILL
+                - SETUID
+                - SETGID
+                - MKNOD
+                runAsUser:
+                  type: MustRunAsRange
+                seLinuxContext:
+                  type: MustRunAs
+                supplementalGroups:
+                  type: RunAsAny
+                users:
+                - system:serviceaccount:openshift-compliance:api-resource-collector 
+                volumes:
+                - configMap
+                - downwardAPI
+                - emptyDir
+                - persistentVolumeClaim
+                - projected
+                - secret
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
           name: compliance-operator-role-bindings
         spec:
           remediationAction: {{ $.Values.remediation_action | default "inform" }}
