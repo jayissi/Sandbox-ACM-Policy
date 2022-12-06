@@ -29,7 +29,15 @@ externalSecrets:
     tlsTemplate: false
     secretData:
       - secretKey: arn
+        remoteRefKey: null
 
+#  - name: root-ca
+#    namespace: openshift-config
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: false
+#    secretData:
+#      - secretKey: ca.crt
 #  - name: proxy-cert
 #    namespace: openshift-config
 #    refreshInterval: 15s
@@ -53,3 +61,13 @@ externalSecrets:
 #    secretData:
 #      - secretKey: tls.crt
 #      - secretKey: tls.key
+#  - name: central-certs
+#    namespace: stackrox
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: true
+#    secretData:
+#      - secretKey: tls.crt
+#        remoteRefKey: openshift-ingress/ingress-certs
+#      - secretKey: tls.key
+#        remoteRefKey: openshift-ingress/ingress-certs
