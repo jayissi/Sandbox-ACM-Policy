@@ -1,21 +1,21 @@
-Red Hat Advanced Cluster Security: Central
-==========================================
+Red Hat Advanced Cluster Security: Operator
+===========================================
 
 <br />
 
 Summary
 -------
 
-Central service provides access to a user interface through a web UI or the RHACS portal.
+Tool design to detect most threats and cves while providing compliance analysis and reporting.
 
 <br />
 
 Description
 -----------
 
-Central installs the Central, Scanner, and Scanner DB services[^1]. The Central service provides access to a user interface through a web UI or the RHACS portal. It also handles API interactions and provides persistent storage. Scanner analyzes images for known vulnerabilities. It uses Scanner DB as a cache for vulnerability definitions.
+Red Hat Advanced Cluster Security for Kubernetes (RHACS) is an enterprise-ready, Kubernetes-native container security solution that protects your vital applications across build, deploy, and runtime stages of the application lifecycle[^1]. It deploys in your infrastructure and integrates with your DevOps tooling and workflows to deliver better security and compliance and to enable DevOps and InfoSec teams to operationalize security.
 
-[^1]: [Central](https://www.redhat.com/sysadmin/kubernetes-RHACS-red-hat-advanced-cluster-security)
+[^1]: [Red Hat Advanced Cluster Security for Kubernetes](https://docs.openshift.com/acs/3.72/release_notes/372-release-notes.html)
 
 <br />
 
@@ -87,14 +87,6 @@ Variable | Description | Required | Data Type | Default Value |
 `policy_namespace` | `.metadata.namespace`<br>Where the policy resource will be located within Openshift. | yes | string | default |
 `remediation_action` | `.spec.remediation_action`<br>Specifies the remediation of your policy.<br>The parameter values are `enforce` and `inform`. | no | string | inform |
 `severity` | `.spec.policy-templates[*].objectDefinition.spec.severity`<br>Specifies the severity when the policy is non-compliant.<br>The parameter values are `high`, `medium`, and `low`. | no | string | low |
-`cluster_name` | Name of _<cluster_name>_ labeled in RHACM | yes | string | RHACM label<br>`name=<cluster_name>` |
-`custom_central_route_hostname` | Hostname of central's URL | no | string | central.<wildcard_domain> |
-`central_storage_class_name` | StorageClass of central's PVC `stackrox-db`<br>Red Hat recommends using RBD block mode PVCs | no | string | gp2 |
-`default_tls_secret` | Terminate TLS in Central and serve a custom server certificate<br>specify a secret containing the certificate and private key | no | string |
-`central_root_ca_name` | Specify additional trusted Root CAs | no | string |
-`node.enableTolerations` | Option to place central instance on specific node | no | boolean |
-`node.selector` | Option to add node label | no | string |
-`node.tolerations` | Option to add node taint for node label (if applies) | no | list |
 
 <br />
 
