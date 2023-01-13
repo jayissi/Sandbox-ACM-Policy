@@ -10,3 +10,6 @@ hub_cluster:
   acm_policies:
     - rhacs-central
     - rhacs-init-bundle
+    - aap-operator
+    - aap-controller
+    - aap-hub
