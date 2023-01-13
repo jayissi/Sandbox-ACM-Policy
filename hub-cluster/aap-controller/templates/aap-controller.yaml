@@ -1,0 +1,51 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: {{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+spec:
+  disabled: false
+  remediationAction: {{ $.Values.remediation_action | default "inform" }}
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: aap-controller
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: automationcontroller.ansible.com/v1beta1
+                kind: AutomationController
+                metadata:
+                  name: {{ $.Values.name }}
+                  namespace: aap
+                spec:
+                  hostname: {{ $.Values.name }}
+                  create_preload_data: true
+                  route_tls_termination_mechanism: Edge
+                  garbage_collect_secrets: false
+                  ingress_type: Route
+                  loadbalancer_port: 80
+                  no_log: true
+                  image_pull_policy: IfNotPresent
+                  projects_storage_size: 10Gi
+                  auto_upgrade: true
+                  task_privileged: false
+                  set_self_labels: true
+                  projects_persistence: true
+                  replicas: 1
+                  admin_user: admin
+                  loadbalancer_protocol: http
+                  nodeport_port: 30080
+                  projects_use_existing_claim: _No_
+                  projects_storage_access_mode: ReadWriteMany
+                  projects_storage_class: ocs-storagecluster-cephfs
+                  postgres_storage_class: ocs-storagecluster-ceph-rbd
+                  admin_email: {{ $.Values.admin_email }}
+                  route_host: >-
+                    {{ $.Values.name }}.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
