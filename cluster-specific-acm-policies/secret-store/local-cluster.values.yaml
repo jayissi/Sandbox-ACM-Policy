@@ -24,3 +24,7 @@ secretstore:
   - name: vault
     namespace: openshift-storage
     role: demo
+
+#  - name: automation-controller
+#    namespace: aap
+#    role: aap

@@ -71,3 +71,15 @@ externalSecrets:
 #        remoteRefKey: openshift-ingress/ingress-certs
 #      - secretKey: tls.key
 #        remoteRefKey: openshift-ingress/ingress-certs
+# 
+
+#
+# Automation Controller secret to lookup for custom CA trusted bundle
+#
+#  - name: trusted-cacert-bundle
+#    namespace: aap
+#    refreshInterval: 1m
+#    secretStoreRefName: automation-controller
+#    tlsTemplate: false
+#    secretData:
+#      - secretKey: bundle-ca.crt

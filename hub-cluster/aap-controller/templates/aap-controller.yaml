@@ -49,3 +49,9 @@ spec:
                   admin_email: {{ $.Values.admin_email }}
                   route_host: >-
                     {{ $.Values.name }}.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
+#                    
+#                 Option to support multi CA trust bundle.
+#                 Ref SecretStore and ExternalSecret value file.
+#
+#                  bundle_cacert_secret: trusted-cacert-bundle
+#                  ca_trust_bundle: /etc/pki/tls/certs/ca-bundle.crt
