@@ -82,8 +82,8 @@ spec:
                       {{- end }}
                       providerSpec:
                         value:
-#                          ami:
-#                            id: {{ $.Values.ami_id }}
+                          ami:
+                            id: {{ $.Values.ami_id }}
                           apiVersion: awsproviderconfig.openshift.io/v1beta1
                           blockDevices:
                           - ebs:

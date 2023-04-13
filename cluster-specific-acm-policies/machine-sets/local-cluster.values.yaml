@@ -52,7 +52,7 @@ machines:
     subnet_id: subnet-789
 
 enable_kms_encryption: true
-ami_id: ami-08750efc5bc9eb5ff
+ami_id: ami-04a508b80321ac196
 
 storage_type: gp3
 storage_size: 100
