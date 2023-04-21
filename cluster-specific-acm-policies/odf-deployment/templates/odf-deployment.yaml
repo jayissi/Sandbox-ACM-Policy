@@ -5,6 +5,17 @@ metadata:
   name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
   namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
+  dependencies:
+    - apiVersion: policy.open-cluster-management.io/v1
+      kind: Policy
+      name: {{ $.Values.cluster_name }}-gp3-encrypted-sc
+      namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+      compliance: Compliant
+    - apiVersion: policy.open-cluster-management.io/v1
+      kind: Policy
+      name: {{ $.Values.cluster_name }}-machine-sets
+      namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+      compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
@@ -25,7 +36,13 @@ spec:
                   labels:
                     argocd.argoproj.io/managed-by: openshift-gitops
                   name: openshift-storage
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: openshift-storage-namespace
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -44,7 +61,13 @@ spec:
                 spec:
                   targetNamespaces:
                   - openshift-storage
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: openshift-storage-operatorgroup
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -69,7 +92,13 @@ spec:
                   name: odf-operator
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: odf-operator-install
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -129,7 +158,13 @@ spec:
                       replica: 3
                       portable: true
                       preparePlacement: {}
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: odf-storage-system
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
