@@ -56,6 +56,6 @@ ami_id: ami-04a508b80321ac196
 
 storage_type: gp3
 storage_size: 100
-app_instanceType: r5.2xlarge
+app_instanceType: r5.4xlarge
 odf_instanceType: m5.4xlarge
 infra_instanceType: m5.4xlarge
