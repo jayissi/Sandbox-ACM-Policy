@@ -52,13 +52,13 @@ spec:
                   - openshift-storage
     - extraDependencies:
         - apiVersion: policy.open-cluster-management.io/v1
-          kind: ConfigurationPolicy
-          name: openshift-storage-operatorgroup
-          namespace: ""
+          kind: Policy
+          name: {{ $.Values.cluster_name }}-machine-sets
+          namespace: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
           compliance: Compliant
         - apiVersion: policy.open-cluster-management.io/v1
           kind: ConfigurationPolicy
-          name: {{ $.Values.cluster_name }}-machine-sets
+          name: openshift-storage-operatorgroup
           namespace: ""
           compliance: Compliant
         - apiVersion: policy.open-cluster-management.io/v1

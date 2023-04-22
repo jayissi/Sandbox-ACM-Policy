@@ -8,7 +8,13 @@ spec:
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: odf-operator-install
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
