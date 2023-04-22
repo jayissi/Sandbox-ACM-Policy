@@ -25,7 +25,13 @@ spec:
                   labels:
                     argocd.argoproj.io/managed-by: openshift-gitops
                   name: aap
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: aap-namespace
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -42,7 +48,13 @@ spec:
                   name: aap
                   namespace: aap
                 spec: {}
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: aap-operator-group
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -64,7 +76,13 @@ spec:
                   installPlanApproval: Automatic
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: aap-subscription
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:

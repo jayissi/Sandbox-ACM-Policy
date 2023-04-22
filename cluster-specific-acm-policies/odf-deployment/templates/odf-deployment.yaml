@@ -5,17 +5,6 @@ metadata:
   name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
   namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
-  dependencies:
-    - apiVersion: policy.open-cluster-management.io/v1
-      kind: Policy
-      name: {{ $.Values.cluster_name }}-gp3-encrypted-sc
-      namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
-      compliance: Compliant
-    - apiVersion: policy.open-cluster-management.io/v1
-      kind: Policy
-      name: {{ $.Values.cluster_name }}-machine-sets
-      namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
-      compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
@@ -65,6 +54,16 @@ spec:
         - apiVersion: policy.open-cluster-management.io/v1
           kind: ConfigurationPolicy
           name: openshift-storage-operatorgroup
+          namespace: ""
+          compliance: Compliant
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: {{ $.Values.cluster_name }}-machine-sets
+          namespace: ""
+          compliance: Compliant
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: {{ $.Values.cluster_name }}-gp3-encrypted-sc
           namespace: ""
           compliance: Compliant
       objectDefinition:
@@ -184,24 +183,13 @@ spec:
                 status:
                   phase: Succeeded
     {{- if eq $.Values.enable_cephfs_default_storageclass true }}
-    - objectDefinition:
-        apiVersion: policy.open-cluster-management.io/v1
-        kind: ConfigurationPolicy
-        metadata:
-          name: disable-default-sc-gp2
-        spec:
-          remediationAction: {{ $.Values.remediation_action | default "inform" }}
-          severity: {{ $.Values.severity | default "low" }}
-          object-templates:
-            - complianceType: musthave
-              objectDefinition:
-                apiVersion: storage.k8s.io/v1
-                kind: StorageClass
-                metadata:
-                  annotations:
-                    storageclass.kubernetes.io/is-default-class: "false"
-                  name: gp2
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: odf-operator-status
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -218,4 +206,27 @@ spec:
                   annotations:
                     storageclass.kubernetes.io/is-default-class: "true"
                   name: ocs-storagecluster-cephfs
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: enable-default-sc-cephfs
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: disable-default-sc-gp2
+        spec:
+          remediationAction: {{ $.Values.remediation_action | default "inform" }}
+          severity: {{ $.Values.severity | default "low" }}
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: storage.k8s.io/v1
+                kind: StorageClass
+                metadata:
+                  annotations:
+                    storageclass.kubernetes.io/is-default-class: "false"
+                  name: gp2
     {{- end -}}

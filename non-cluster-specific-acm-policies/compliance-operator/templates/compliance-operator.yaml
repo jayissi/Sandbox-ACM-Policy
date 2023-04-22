@@ -25,7 +25,13 @@ spec:
                   labels:
                     argocd.argoproj.io/managed-by: openshift-gitops
                   name: openshift-compliance
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: compliance-operator-ns
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -44,7 +50,13 @@ spec:
                 spec:
                   targetNamespaces:
                     - openshift-compliance
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: compliance-operator-group
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -65,7 +77,13 @@ spec:
                   installPlanApproval: Automatic
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: compliance-operator-subscription
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:

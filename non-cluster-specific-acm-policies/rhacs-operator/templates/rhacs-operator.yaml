@@ -42,7 +42,13 @@ spec:
                   labels:
                     argocd.argoproj.io/managed-by: openshift-gitops
                   name: rhacs-operator
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: rhacs-operator-namespace
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -59,7 +65,13 @@ spec:
                   name: rhacs-operator-group
                   namespace: rhacs-operator
                 spec: {}
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: rhacs-operator-group
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
@@ -81,7 +93,13 @@ spec:
                   name: rhacs-operator
                   source: redhat-operators
                   sourceNamespace: openshift-marketplace
-    - objectDefinition:
+    - extraDependencies:
+        - apiVersion: policy.open-cluster-management.io/v1
+          kind: ConfigurationPolicy
+          name: rhacs-operator-install
+          namespace: ""
+          compliance: Compliant
+      objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:

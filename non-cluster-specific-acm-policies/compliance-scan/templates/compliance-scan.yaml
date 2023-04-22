@@ -5,6 +5,12 @@ metadata:
   name: {{ $.Values.acm_policy_name }}
   namespace: {{ $.Values.policy_namespace | default "default" }}
 spec:
+  dependencies:
+    - apiVersion: policy.open-cluster-management.io/v1
+      kind: Policy
+      name: compliance-operator
+      namespace: {{ $.Values.policy_namespace | default "default" }}
+      compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
