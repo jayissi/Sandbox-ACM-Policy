@@ -11,11 +11,6 @@ spec:
       name: aap-operator
       namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
       compliance: Compliant
-    - apiVersion: policy.open-cluster-management.io/v1
-      kind: Policy
-      name: odf-deployment
-      namespace: local-cluster-{{ $.Values.default_namespace }}
-      compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
