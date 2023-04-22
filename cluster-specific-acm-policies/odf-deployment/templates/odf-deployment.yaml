@@ -209,7 +209,7 @@ spec:
     - extraDependencies:
         - apiVersion: policy.open-cluster-management.io/v1
           kind: ConfigurationPolicy
-          name: odf-storage-system
+          name: enable-default-sc-cephfs
           namespace: ""
           compliance: Compliant
       objectDefinition:
