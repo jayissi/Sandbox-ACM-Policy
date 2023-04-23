@@ -1,0 +1,61 @@
+---
+acm_policy_name: machine-sets
+env: Sandbox Demo
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: enforce
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: dev
+default_namespace: acm-policy
+
+machineset_use_subnet_id: false
+machines:
+  - type: app
+    availability_zone: a
+    subnet_id: subnet-123
+  - type: app
+    availability_zone: b
+    subnet_id: subnet-456
+  - type: app
+    availability_zone: c
+    subnet_id: subnet-789
+  - type: odf
+    availability_zone: a
+    subnet_id: subnet-123
+  - type: odf
+    availability_zone: b
+    subnet_id: subnet-456
+  - type: odf
+    availability_zone: c
+    subnet_id: subnet-789
+  - type: infra
+    availability_zone: a
+    subnet_id: subnet-123
+  - type: infra
+    availability_zone: b
+    subnet_id: subnet-456
+  - type: infra
+    availability_zone: c
+    subnet_id: subnet-789
+
+enable_kms_encryption: true
+ami_id: ami-04a508b80321ac196
+
+storage_type: gp3
+storage_size: 100
+app_instanceType: r5.4xlarge
+odf_instanceType: m5.4xlarge
+infra_instanceType: m5.4xlarge

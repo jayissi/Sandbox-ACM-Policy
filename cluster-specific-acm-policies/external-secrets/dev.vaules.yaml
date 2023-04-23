@@ -1,0 +1,85 @@
+---
+acm_policy_name: external-secrets
+
+#
+# remediation_action defaults to 'inform' but, can be set to 'enforce'
+#
+remediation_action: enforce
+
+#
+# severity defaults to 'low' but, can be set to 'medium' or 'high'
+#
+severity: high
+
+#
+# specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
+# If policy_namespace: is blank or doesn't exists, then namespace will be <cluster_name>-<default_namespace>
+#
+policy_namespace:
+#
+cluster_name: dev
+default_namespace: acm-policy
+
+
+externalSecrets:
+  - name: kms-key
+    namespace: openshift-storage
+    refreshInterval: 15s
+    secretStoreRefName: vault
+    tlsTemplate: false
+    secretData:
+      - secretKey: arn
+        remoteRefKey: null
+
+#  - name: root-ca
+#    namespace: openshift-config
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: false
+#    secretData:
+#      - secretKey: ca.crt
+#  - name: proxy-cert
+#    namespace: openshift-config
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: false
+#    secretData:
+#      - secretKey: ca.crt
+#  - name: api-certs
+#    namespace: openshift-config
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: true
+#    secretData:
+#      - secretKey: tls.crt
+#      - secretKey: tls.key
+#  - name: ingress-certs
+#    namespace: openshift-ingress
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: true
+#    secretData:
+#      - secretKey: tls.crt
+#      - secretKey: tls.key
+#  - name: central-certs
+#    namespace: stackrox
+#    refreshInterval: 15s
+#    secretStoreRefName: vault
+#    tlsTemplate: true
+#    secretData:
+#      - secretKey: tls.crt
+#        remoteRefKey: openshift-ingress/ingress-certs
+#      - secretKey: tls.key
+#        remoteRefKey: openshift-ingress/ingress-certs
+# 
+
+#
+# Automation Controller secret to lookup for custom CA trusted bundle
+#
+#  - name: trusted-cacert-bundle
+#    namespace: aap
+#    refreshInterval: 1m
+#    secretStoreRefName: automation-controller
+#    tlsTemplate: false
+#    secretData:
+#      - secretKey: bundle-ca.crt
