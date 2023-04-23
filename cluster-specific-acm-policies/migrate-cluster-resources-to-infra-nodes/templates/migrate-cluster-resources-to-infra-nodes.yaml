@@ -2,9 +2,15 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: Policy
 metadata:
-  name: {{ $.Values.acm_policy_name }}
-  namespace: {{ $.Values.policy_namespace | default "default" }}
+  name: {{ $.Values.cluster_name }}-{{ $.Values.acm_policy_name }}
+  namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
 spec:
+  dependencies:
+    - apiVersion: policy.open-cluster-management.io/v1
+      kind: Policy
+      name: {{ $.Values.cluster_name }}-machine-sets
+      namespace: {{ $.Values.policy_namespace | default (printf "%+v-%+v" $.Values.cluster_name $.Values.default_namespace) }}
+      compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
   policy-templates:
