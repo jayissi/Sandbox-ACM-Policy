@@ -1,4 +1,4 @@
-acm_policy_name: migrate-cluster-resources
+acm_policy_name: migrate-cluster-resource
 
 #
 # specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
