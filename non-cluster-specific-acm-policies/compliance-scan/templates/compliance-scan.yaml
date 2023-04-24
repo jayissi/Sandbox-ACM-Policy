@@ -7,9 +7,9 @@ metadata:
 spec:
   dependencies:
     - apiVersion: policy.open-cluster-management.io/v1
-      kind: Policy
-      name: compliance-operator
-      namespace: {{ $.Values.policy_namespace | default "default" }}
+      kind: ConfigurationPolicy
+      name: compliance-operator-status
+      namespace: ""
       compliance: Compliant
   disabled: false
   remediationAction: {{ $.Values.remediation_action | default "inform" }}
