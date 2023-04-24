@@ -1,4 +1,4 @@
-acm_policy_name: migrate-cluster-resources-to-infra-nodes
+acm_policy_name: migrate-cluster-resources-to-infra
 
 #
 # specify this policy namespace by passing a string value to policy_namespace. policy_namespace value must already be created.
@@ -6,7 +6,7 @@ acm_policy_name: migrate-cluster-resources-to-infra-nodes
 #
 policy_namespace:
 #
-cluster_name: local-cluster
+cluster_name: dev
 default_namespace: acm-policy
 
 #

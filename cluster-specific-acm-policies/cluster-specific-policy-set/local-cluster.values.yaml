@@ -20,4 +20,4 @@ cluster:
 #    - openshift-api-certificate
 #    - openshift-proxy-certificate
 #    - openshift-ingress-certificate
-    - migrate-cluster-resources-to-infra-nodes
+    - migrate-cluster-resources-to-infra
