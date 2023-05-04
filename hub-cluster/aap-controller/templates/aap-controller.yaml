@@ -44,7 +44,7 @@ spec:
                   task_privileged: false
                   set_self_labels: true
                   projects_persistence: true
-                  replicas: 1
+                  replicas: 2
                   admin_user: admin
                   loadbalancer_protocol: http
                   nodeport_port: 30080
