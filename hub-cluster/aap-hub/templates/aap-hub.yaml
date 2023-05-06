@@ -31,6 +31,20 @@ spec:
                   name: {{ $.Values.name }}-hub
                   namespace: aap
                 spec:
+#                  sso_secret: automation-hub-sso # https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.3/html/deploying_the_red_hat_ansible_automation_platform_operator_on_openshift_container_platform/using-rhsso-operator-with-automation-hub#proc-creating-a-secret_using-a-rhsso-operator
+                  pulp_settings:
+                    CONNECTED_ANSIBLE_CONTROLLERS:
+                      - >-
+                        https://aap.{{ `{{ (lookup "config.openshift.io/v1" "Ingress" "" "cluster").spec.domain }}` }}
+                    verify_ssl: false
+#                    GALAXY_TOKEN_EXPIRATION: 10080 # 1 week in seconds
+#                    TOKEN_AUTH_DISABLED: true
+#                    GALAXY_VERIFY_KEYCLOAK_SSL_CERTS: true
+#                    GALAXY_AUTHENTICATION_CLASSES:
+#                      - rest_framework.authentication.SessionAuthentication
+#                      - rest_framework.authentication.TokenAuthentication
+#                      - galaxy_ng.app.auth.auth.RHIdentityAuthentication
+#                      - galaxy_ng.app.auth.keycloak.KeycloakBasicAuth
                   hostname: {{ $.Values.name }}-hub
                   nginx_proxy_send_timeout: 120s
                   gunicorn_content_workers: 2
@@ -45,7 +59,7 @@ spec:
                   gunicorn_timeout: 90
                   nginx_client_max_body_size: 10m
                   web:
-                    replicas: 1
+                    replicas: 2
                   nginx_proxy_connect_timeout: 120s
                   haproxy_timeout: 180s
                   content:
