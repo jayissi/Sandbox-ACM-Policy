@@ -88,3 +88,9 @@ Author
 ======
 
 Johnny Ayissi
+
+<br />
+
+>
+> Original code [sampled](https://github.com/redhat-cop/gitops-catalog/blob/main/advanced-cluster-security-operator/instance/base/create-cluster-init-bundle-job.yaml)  
+>
