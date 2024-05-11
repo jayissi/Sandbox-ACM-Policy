@@ -1,0 +1,11 @@
+---
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogging
+metadata:
+  name: vector-instance
+  namespace: openshift-logging
+spec:
+  collection:
+    logs:
+      type: vector
+      vector: {}

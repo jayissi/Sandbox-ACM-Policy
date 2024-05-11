@@ -1,0 +1,16 @@
+{{- range $role := $.Values.roles }}
+---
+apiVersion: authorization.openshift.io/v1
+groupNames: null
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $role }}
+roleRef:
+  name: {{ $role }}
+subjects:
+- kind: ServiceAccount
+  name: splunk
+  namespace: openshift-logging
+userNames:
+- system:serviceaccount:openshift-logging:splunk
+{{- end }}

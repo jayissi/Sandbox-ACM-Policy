@@ -1,0 +1,30 @@
+---
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: splunk-log-forwarder 
+  namespace: openshift-logging 
+spec:
+  serviceAccountName: splunk
+  outputs:
+  {{- range $splunk_server := $.Values.splunk_servers }}
+    - name: {{ $splunk_server.name }}
+      secret:
+        name: {{ $splunk_server.secret }}
+      type: splunk 
+      url: {{ squote $splunk_server.fqdn }}
+      {{- if $splunk_server.skip_tls_verify }}
+      tls: 
+        insecureSkipVerify: true
+      {{- end }}
+  {{- end }}
+  pipelines:
+  {{- range $splunk_server := $.Values.splunk_servers }}
+    - inputRefs:
+      {{- range $inputRef := $splunk_server.inputRefs }}
+        - {{ print $inputRef }}
+      {{- end }}
+      name: {{ $splunk_server.name }}
+      outputRefs:
+        - {{ $splunk_server.name }}
+  {{- end }}
