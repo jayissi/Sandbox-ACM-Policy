@@ -1,0 +1,13 @@
+---
+ldap_server: 'ldaps://$AD_LDAPS_FQDN:636'
+baseDN: 'ou=users,dc=example,dc=redhat,dc=com'
+usersBaseDN: 'ou=users,dc=example,dc=redhat,dc=com'
+groupBaseDN: 'ou=group,dc=example,dc=redhat,dc=com'
+bindDN: 'cn=ldaps-bind,ou=users,dc=example,dc=redhat,dc=com'
+bindPassword: '$LDAP_BIND_PASSWORD'
+cronjob_schedule: '*/15 * * * *'
+preferredUsername: 'sAMAccountName' # 'uid' is default
+
+rbac_rules:
+  - ad_group: openshift-admins
+    ocp_role: cluster-admin
