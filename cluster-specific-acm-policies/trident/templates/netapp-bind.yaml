@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: netapp-{{ $.Values.svm }}-svc
+  namespace: trident
+type: Opaque
+stringData:
+  username: $NETAPP-SERVICE-ACCOUNT
+  password: $NETAPP-SERVICE-ACCOUNT-PASSWORD

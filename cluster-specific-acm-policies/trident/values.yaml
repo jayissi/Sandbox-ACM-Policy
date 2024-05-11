@@ -1,0 +1,8 @@
+---
+data_lif: '$DATA-LIF'
+management_lif: '$MANAGEMENT-LIF'
+svm: $SVM
+storage_prefix: $CLUSTER-NAME-ocp-
+export_cidrs:
+  - 1.1.1.1
+  - 2.2.2.2

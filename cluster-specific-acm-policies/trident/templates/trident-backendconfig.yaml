@@ -1,0 +1,22 @@
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: {{ $.Values.svm }}-backend-tbc-ontap-nas-$CLUSTER-NAME
+  namespace: trident
+spec:
+  version: 1
+  backendName: mgm_backend
+  storageDriverName: ontap-nas
+  managementLIF: {{ print $.Values.management_lif }}
+  dataLIF: {{ print $.Values.data_lif }}
+  svm: {{ $.Values.svm }}
+  credentials:
+    name: netapp-{{ $.Values.svm }}-svc
+  nfsMountOptions: nfsvers=4.1
+  storagePrefix: {{ $.Values.storage_prefix }}
+  autoExportCIDRs:
+  {{- range $cidr := $.Values.export_cidrs }}
+    - {{ $cidr }}
+  {{- end }}
+  autoExportPolicy: true
