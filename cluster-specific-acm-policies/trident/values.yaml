@@ -2,7 +2,7 @@
 data_lif: '$DATA-LIF'
 management_lif: '$MANAGEMENT-LIF'
 svm: $SVM
-storage_prefix: $CLUSTER-NAME-ocp-
+storage_prefix: $CLUSTERNAME_openshift_
 export_cidrs:
   - 1.1.1.1
   - 2.2.2.2
