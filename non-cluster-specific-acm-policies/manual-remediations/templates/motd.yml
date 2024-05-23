@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: motd
+  namespace: openshift
+data:
+  message: " I've read & consent to terms in IS user agreem't."

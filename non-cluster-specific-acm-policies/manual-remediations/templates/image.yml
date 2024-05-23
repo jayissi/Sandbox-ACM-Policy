@@ -1,0 +1,45 @@
+apiVersion: config.openshift.io/v1
+kind: Image
+metadata:
+  annotations:
+    include.release.openshift.io/ibm-cloud-managed: 'true'
+    include.release.openshift.io/self-managed-high-availability: 'true'
+    include.release.openshift.io/single-node-developer: 'true'
+    release.openshift.io/create-only: 'true'
+  name: cluster
+spec: 
+{{- if $.Values.enable_image_whitelist }}
+  allowedRegistriesForImport:
+    - domainName: quay.io
+      insecure: false
+    - domainName: cdn.quay.io
+      insecure: false
+    - domainName: cdn01.quay.io
+      insecure: false
+    - domainName: cdn02.quay.io
+      insecure: false
+    - domainName: cdn03.quay.io
+      insecure: false
+    - domainName: registry.access.redhat.com
+      insecure: false
+    - domainName: registry.connect.redhat.com
+      insecure: false
+    - domainName: registry.redhat.io
+      insecure: false
+  registrySources:
+    allowedRegistries:
+      - quay.io
+      - cdn.quay.io
+      - cdn01.quay.io
+      - cdn02.quay.io
+      - cdn03.quay.io
+      - registry.access.redhat.com
+      - registry.connect.redhat.com
+      - registry.redhat.io
+{{- if $.Values.whitelist_internal_registry }}
+      - image-registry.openshift-image-registry.svc:5000
+{{- end }}
+{{- else }}
+  {}
+{{- end }}
+
